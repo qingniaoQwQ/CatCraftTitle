@@ -39,7 +39,7 @@
 | `/title list` | 查看自己拥有的头衔列表及后缀状态 |
 | `/title active <ID>` | 启用指定 ID 的头衔 |
 | `/title deactive` | 停用当前头衔，恢复默认 |
-| `/title remove <ID>` | 移除自己拥有的某个头衔（不可移除正在激活的） |
+| `/title remove <ID>` | 删除自己的头衔（无法添加，直接删除！） |
 | `/title suffixactive` | 启用后缀显示 |
 | `/title suffixdeactive` | 关闭后缀显示 |
 
