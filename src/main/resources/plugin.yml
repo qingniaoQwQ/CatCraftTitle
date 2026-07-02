@@ -1,0 +1,15 @@
+name: CatCraftTitle
+version: 1.0.0 Beta
+main: catcraft.title.CatCraftTitlePlugin
+api-version: 1.21
+author: QingNiaoQaQ (CatCraft Team)
+depend: [PlaceholderAPI]
+
+commands:
+  title:
+    description: CatCraft玩家头衔管理
+    usage: /title help
+  titleadmin:
+    description: CatCraft管理员头衔管理
+    permission: catcraft.admin
+    usage: /titleadmin help

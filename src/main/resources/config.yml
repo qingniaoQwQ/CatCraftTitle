@@ -1,0 +1,40 @@
+#  ██████  █████   ████████  ██████ ██████   █████  ███████ ████████
+#  ██      ██   ██    ██    ██      ██   ██ ██   ██ ██         ██
+#  ██      ███████    ██    ██      ██████  ███████ █████      ██
+#  ██      ██   ██    ██    ██      ██   ██ ██   ██ ██         ██
+#  ██████  ██   ██    ██     ██████ ██   ██ ██   ██ ██         ██
+
+mysql: #MySql设置
+  enabled: true
+  host: localhost
+  port: 3306
+  db:
+  user:
+  pass:
+
+local-database:
+  file: catcraft.db
+
+permissions:
+  set-title: "catcraft.title.set"
+  admin: "catcraft.admin"
+
+settings:
+  debug: true
+  enable-rgb: false      # 启用这个可能会有BUG请各位服主注意喵~
+
+messages:
+  no-permission: "&c你没有权限执行此操作"
+  set-success: "&a成功设置玩家头衔"
+  reload: "&a配置已重载"
+
+usage:
+  commands:
+    - "/title set <玩家> <头衔>  → 设置头衔"
+    - "/title suffix <玩家> <后缀> → 设置后缀"
+    - "/title reload → 重载插件"
+  placeholders:
+    - "%catcraft_title% → 玩家头衔"
+    - "%catcraft_suffix% → 玩家后缀"
+  rgb:
+    - "&x&F&F&0&0&0&0 → 红色渐变格式"
