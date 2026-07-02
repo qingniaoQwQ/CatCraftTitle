@@ -1,5 +1,5 @@
 name: CatCraftTitle
-version: 1.2.0 Beta
+version: 1.2.0 
 main: catcraft.title.CatCraftTitlePlugin
 api-version: 1.16
 author: QingNiaoQaQ (CatCraft Team)
