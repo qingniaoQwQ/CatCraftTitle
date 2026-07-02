@@ -1,5 +1,7 @@
 # CatCraftTitle
 
+[English](README_EN.md) | [中文](README.md)
+
 ## Introduction
 
 **CatCraftTitle** is a Minecraft player title plugin built for **Paper / Purpur / Spigot**, supporting **MySQL + SQLite dual database auto-switching** for cross-server synchronization. Players can manage their own titles and suffixes, and administrators can assign/modify them flexibly.
