@@ -18,7 +18,7 @@
 -  MySQL / SQLite 双数据库支持，自动降级
 -  与 **PlaceholderAPI** 深度整合，提供变量支持
 -  启动时显示彩色服务器信息横幅
--  多版本兼容（1.19.4 ~ 1.26.2+）
+-  多版本兼容（1.16.1-1.21.11）
 
 ### 兼容服务端
 - ✅ Purpur 1.16.1 ~ 1.21.11
@@ -70,6 +70,19 @@
 
 ---
 
+### 🏗️ 构建
+| 构建 |
+|------|
+|  构建产物位于 build/libs/CatCraftTitle-*.jar |
+
+---
+
+### 📜 许可证
+| 许可证 |
+|------|
+|  本项目采用 MIT License，详情见 LICENSE 文件。 |
+
+---
 ### 🔧 配置文件
 
 插件启动后会自动生成 `config.yml`，主要配置项：
@@ -85,6 +98,8 @@ mysql:
 
 local-database:
   file: catcraft.db      # SQLite 文件名
-
 permissions:
   admin: "catcraft.admin"
+
+
+
