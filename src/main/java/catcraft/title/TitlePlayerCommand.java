@@ -14,10 +14,12 @@ public class TitlePlayerCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (!(sender instanceof Player p)) {
+        // 修改：使用传统 instanceof 写法，兼容 Java 8
+        if (!(sender instanceof Player)) {
             sender.sendMessage(ColorUtil.color(PREFIX + "§c该命令仅限玩家执行"));
             return true;
         }
+        Player p = (Player) sender;
 
         if (args.length == 0) {
             sendHelp(p);

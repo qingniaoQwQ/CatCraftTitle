@@ -4,13 +4,13 @@
 #  ██      ██   ██    ██    ██      ██   ██ ██   ██ ██         ██
 #  ██████  ██   ██    ██     ██████ ██   ██ ██   ██ ██         ██
 
-mysql: #MySql设置
+mysql:
   enabled: true
   host: localhost
   port: 3306
-  db:
-  user:
-  pass:
+  db: your_db
+  user: your_user
+  pass: your_pass
 
 local-database:
   file: catcraft.db
@@ -21,7 +21,8 @@ permissions:
 
 settings:
   debug: true
-  enable-rgb: false      # 启用这个可能会有BUG请各位服主注意喵~
+  enable-rgb: false
+  check-update: true
 
 messages:
   no-permission: "&c你没有权限执行此操作"

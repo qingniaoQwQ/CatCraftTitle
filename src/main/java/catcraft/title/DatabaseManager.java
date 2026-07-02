@@ -109,6 +109,7 @@ public class DatabaseManager {
         }
     }
 
+    // 兼容 MySQL 低版本：先查询列是否存在
     private void ensureSuffixActiveColumn(boolean sqlite) {
         try {
             if (sqlite) {
@@ -127,13 +128,18 @@ public class DatabaseManager {
                     }
                 }
             } else {
-                try (Statement stmt = conn.createStatement()) {
-                    stmt.execute("ALTER TABLE catcraft_titles ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT TRUE");
-                    plugin.getLogger().info("已为 catcraft_titles 表添加 is_active 列 (MySQL)");
-                } catch (SQLException ignored) {
+                // MySQL：检查列是否存在
+                try (Statement stmt = conn.createStatement();
+                     ResultSet rs = stmt.executeQuery("SHOW COLUMNS FROM catcraft_titles LIKE 'is_active'")) {
+                    if (!rs.next()) {
+                        stmt.execute("ALTER TABLE catcraft_titles ADD COLUMN is_active BOOLEAN DEFAULT TRUE");
+                        plugin.getLogger().info("已为 catcraft_titles 表添加 is_active 列 (MySQL)");
+                    }
                 }
             }
         } catch (Exception e) {
+            // 忽略异常，可能表已存在或权限问题
+            plugin.getLogger().warning("无法检查或添加 is_active 列，可能表结构已存在");
         }
     }
 
@@ -155,15 +161,12 @@ public class DatabaseManager {
         return new SuffixData("", true);
     }
 
-
     public String getSuffix(UUID uuid) {
         return getSuffixData(uuid).suffix;
     }
 
-
     public boolean setSuffix(UUID uuid, String suffix) {
         if (conn == null) return false;
-
 
         SuffixData existing = getSuffixData(uuid);
         boolean currentActive = existing.active;
@@ -186,21 +189,19 @@ public class DatabaseManager {
         }
     }
 
-
+    // 改为参数化查询，不再拼接字符串
     public boolean setSuffixActive(UUID uuid, boolean active) {
         if (conn == null) return false;
-        String sql = "UPDATE catcraft_titles SET is_active = " + (isSQLite ? (active ? "1" : "0") : (active ? "TRUE" : "FALSE")) +
-                " WHERE uuid = ?";
+        String sql = "UPDATE catcraft_titles SET is_active = ? WHERE uuid = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, uuid.toString());
+            ps.setBoolean(1, active);
+            ps.setString(2, uuid.toString());
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
     }
-
-
 
     public List<TitleEntry> getPlayerTitles(UUID uuid) {
         List<TitleEntry> list = new ArrayList<>();
@@ -249,7 +250,6 @@ public class DatabaseManager {
         }
     }
 
-
     public boolean updateTitleDisplay(UUID uuid, int id, String newDisplay) {
         if (conn == null) return false;
         String sql = "UPDATE player_titles SET title_display = ? WHERE uuid = ? AND title_id = ?";
@@ -282,16 +282,19 @@ public class DatabaseManager {
         if (conn == null) return false;
         try {
             conn.setAutoCommit(false);
-            String clearSql = "UPDATE player_titles SET is_active = " + (isSQLite ? "0" : "FALSE") + " WHERE uuid = ?";
+            // 清除所有激活状态
+            String clearSql = "UPDATE player_titles SET is_active = ? WHERE uuid = ?";
             try (PreparedStatement ps = conn.prepareStatement(clearSql)) {
-                ps.setString(1, uuid.toString());
+                ps.setBoolean(1, false);
+                ps.setString(2, uuid.toString());
                 ps.executeUpdate();
             }
             if (id > 0) {
-                String setSql = "UPDATE player_titles SET is_active = " + (isSQLite ? "1" : "TRUE") + " WHERE uuid = ? AND title_id = ?";
+                String setSql = "UPDATE player_titles SET is_active = ? WHERE uuid = ? AND title_id = ?";
                 try (PreparedStatement ps = conn.prepareStatement(setSql)) {
-                    ps.setString(1, uuid.toString());
-                    ps.setInt(2, id);
+                    ps.setBoolean(1, true);
+                    ps.setString(2, uuid.toString());
+                    ps.setInt(3, id);
                     ps.executeUpdate();
                 }
             }
@@ -307,10 +310,10 @@ public class DatabaseManager {
 
     public TitleEntry getActiveTitle(UUID uuid) {
         if (conn == null) return null;
-        String sql = "SELECT title_id, title_display, is_active FROM player_titles WHERE uuid = ? AND is_active = " +
-                (isSQLite ? "1" : "TRUE");
+        String sql = "SELECT title_id, title_display, is_active FROM player_titles WHERE uuid = ? AND is_active = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, uuid.toString());
+            ps.setBoolean(2, true);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return new TitleEntry(
@@ -336,8 +339,6 @@ public class DatabaseManager {
             e.printStackTrace();
         }
     }
-
-
 
     public static class TitleEntry {
         public int id;

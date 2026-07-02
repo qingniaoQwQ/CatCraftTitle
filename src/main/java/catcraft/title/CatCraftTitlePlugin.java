@@ -1,8 +1,5 @@
 package catcraft.title;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -44,8 +41,10 @@ public class CatCraftTitlePlugin extends JavaPlugin {
         getCommand("titleadmin").setExecutor(adminCmd);
         getCommand("titleadmin").setTabCompleter(adminCmd);
 
-        // ========== 启动横幅 ==========
         printBanner();
+
+        boolean checkUpdate = getConfig().getBoolean("settings.check-update", true);
+        new UpdateChecker(this, checkUpdate).check();
 
         getLogger().info("CatCraftTitle 插件启动成功");
     }
@@ -56,31 +55,17 @@ public class CatCraftTitlePlugin extends JavaPlugin {
         String serverVersion = Bukkit.getVersion();
         String dbType = database.isConnected() ? database.getDatabaseType() : "未连接";
         String dbStatus = database.isConnected() ? "已连接" : "连接失败";
-
-        MiniMessage mm = MiniMessage.miniMessage();
-
-        // 构建横幅内容
-        Component top = mm.deserialize("<color:#FFA500>+------------------------------------------+</color>");
-        Component line1 = mm.deserialize(
-                "|  <color:#008B00>CatCraftTitle</color> <color:#00BFFF>V" + version + "</color>  |"
-        );
-        Component line2 = mm.deserialize(
-                "|  插件作者：<color:#FFD700>QingNiaoQaQ</color> <gray>(CatCraft Team)</gray>  |"
-        );
-        Component line3 = mm.deserialize(
-                "|  服务器: <color:#FFA500>" + serverName + "</color> <gray>" + serverVersion + "</gray> |"
-        );
-        Component line4 = mm.deserialize(
-                "|  数据库: <color:#00FF00>" + dbType + "</color> <gray>(" + dbStatus + ")</gray> |"
-        );
         boolean hasPAPI = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
-        Component line5 = mm.deserialize(
-                "|  PlaceholderAPI: " + (hasPAPI ? "<color:#00FF00>已找到</color>" : "<color:#FF4444>未找到</color>") + " |"
-        );
-        Component bottom = mm.deserialize("<color:#FFA500>+------------------------------------------+</color>");
 
-        // 发送
-        Bukkit.getConsoleSender().sendMessage(Component.text(""));
+        String top = ColorUtil.color("&6+------------------------------------------+");
+        String line1 = ColorUtil.color("&6|  &2CatCraftTitle &bV" + version + "  &6|");
+        String line2 = ColorUtil.color("&6|  插件作者：&eQingNiaoQaQ &7(CatCraft Team)  &6|");
+        String line3 = ColorUtil.color("&6|  服务器: &6" + serverName + " &7" + serverVersion + " &6|");
+        String line4 = ColorUtil.color("&6|  数据库: &a" + dbType + " &7(" + dbStatus + ") &6|");
+        String line5 = ColorUtil.color("&6|  PlaceholderAPI: " + (hasPAPI ? "&a已找到" : "&c未找到") + " &6|");
+        String bottom = ColorUtil.color("&6+------------------------------------------+");
+
+        Bukkit.getConsoleSender().sendMessage("");
         Bukkit.getConsoleSender().sendMessage(top);
         Bukkit.getConsoleSender().sendMessage(line1);
         Bukkit.getConsoleSender().sendMessage(line2);
@@ -88,7 +73,7 @@ public class CatCraftTitlePlugin extends JavaPlugin {
         Bukkit.getConsoleSender().sendMessage(line4);
         Bukkit.getConsoleSender().sendMessage(line5);
         Bukkit.getConsoleSender().sendMessage(bottom);
-        Bukkit.getConsoleSender().sendMessage(Component.text(""));
+        Bukkit.getConsoleSender().sendMessage("");
     }
 
     @Override
