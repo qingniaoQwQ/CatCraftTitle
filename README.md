@@ -1,6 +1,6 @@
 # CatCraftTitle
 
-[中文](#中文) | [English](#english)
+[English](README_EN.md) | [中文](README.md)
 
 ---
 
