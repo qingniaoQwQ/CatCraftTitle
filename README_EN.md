@@ -28,9 +28,11 @@ CatCraftTitle is a player title and suffix management system designed to solve t
 - ❌ The plugin currently does not support English, but Chinese-English bilingual support will be added in the future.
 - ⚠️ PlaceholderAPI is required as a prerequisite.
 ---
-## Unified Management of Titles and Suffixes![CatCraft_1](https://cdn.modrinth.com/data/cached_images/d17878d4406a7ebbf6df97e41bd3ac3633d82fb1.png) 
+## Unified Management of Titles and Suffixes
+![CatCraft_1](https://cdn.modrinth.com/data/cached_images/d17878d4406a7ebbf6df97e41bd3ac3633d82fb1.png) 
 --- 
-## Supports Customizing Player Names and Chat Colors ![CatCraft_2](https://cdn.modrinth.com/data/cached_images/bb9241bde91d7ee56e7b0a5bb4866ac41c121602.png) 
+## Supports Customizing Player Names and Chat Colors 
+![CatCraft_2](https://cdn.modrinth.com/data/cached_images/bb9241bde91d7ee56e7b0a5bb4866ac41c121602.png) 
 ---
 
 ## ✨ Features
