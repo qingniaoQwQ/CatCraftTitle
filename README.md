@@ -1,3 +1,7 @@
+# CatCraftTitle
+
+[中文](README.md) | [English](README_EN.md)
+
 ---
 
 ## 🎯 插件作用
