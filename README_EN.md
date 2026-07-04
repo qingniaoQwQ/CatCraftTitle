@@ -4,60 +4,54 @@
 
 ---
 
-A lightweight and fully-featured Minecraft title plugin that supports both MySQL and SQLite databases, making it easy to manage player titles and suffixes with cross-server synchronization.
-
----
-![CatCraft](https://cdn.modrinth.com/data/cached_images/9996397931ad9af01a23f81aa956ae9dfcf9a80b.png)
-
 ## 🎯 Plugin Overview
 
-CatCraftTitle is a player title and suffix management system designed to solve the following needs:
+CatCraftTitle is a **lightweight, fully-featured Minecraft title and suffix management plugin** with GUI support, full bilingual support (Chinese/English), and multiple database backends (MySQL, PostgreSQL, SQLite). It enables servers to easily implement a player title system with cross-server synchronization.
 
-- Multi-level title system: Each player can have multiple titles managed by unique IDs, freely switchable  
-- Independent suffix system: Titles and suffixes are separated; players can enable or disable suffixes independently  
-- Cross-server synchronization: Supports MySQL for shared data across multiple servers  
-- No restart required for changes: Admins can directly edit title display names without recreating entries  
-- Player self-management: Players can view, enable, and disable their own titles via commands  
-- Default title fallback: Players without a title will display the default “Newbie Meow”  
-- Custom player name color support: Allows customization of player name color and chat color  
-- Chinese supported: Fully supports Chinese  
-- Minecraft legacy color codes supported (e.g. &e for yellow)
-
----
-## ⚠️ Notes
-- ❌ The plugin currently does not support English, but Chinese-English bilingual support will be added in the future.
-- ⚠️ PlaceholderAPI is required as a prerequisite.
----
-## Unified Management of Titles and Suffixes
-![CatCraft_1](https://cdn.modrinth.com/data/cached_images/d17878d4406a7ebbf6df97e41bd3ac3633d82fb1.png) 
---- 
-## Supports Customizing Player Names and Chat Colors 
-![CatCraft_2](https://cdn.modrinth.com/data/cached_images/bb9241bde91d7ee56e7b0a5bb4866ac41c121602.png) 
----
+![CatCraft](https://cdn.modrinth.com/data/cached_images/9996397931ad9af01a23f81aa956ae9dfcf9a80b.png)
 
 ## ✨ Features
 
-| Feature | Description |
-|--------|-------------|
-| Multi-title management | Each player can own multiple titles identified by numeric IDs |
-| Title switching | Players can switch active titles anytime |
-| Independent suffix control | Suffix can be enabled/disabled separately |
-| Admin quick editing | Modify title display name without deleting |
-| Dual database support | MySQL (cross-server) / SQLite (local fallback) |
-| PlaceholderAPI support | Provides %catcraft_title% and %catcraft_suffix% placeholders |
-| Startup banner | Displays colored server status and database info |
-| Multi-version support | Supports Minecraft 1.16.x ~ 1.21.11 |
+- ✅ **Multi-title system**: Each player can own multiple titles, managed by unique IDs, freely switchable
+- ✅ **Independent suffix system**: Titles and suffixes are separated; players can enable/disable each suffix individually
+- ✅ **Graphical GUI**: Players can use `/title gui` to manage all titles intuitively
+- ✅ **Cross-server sync**: Supports MySQL / PostgreSQL for shared data across multiple servers
+- ✅ **Automatic failover**: Falls back to SQLite if MySQL/PostgreSQL fails, no data loss
+- ✅ **No restart required**: Admins can edit title display names on the fly
+- ✅ **Player self-service**: Players manage their own titles and suffixes via commands or GUI
+- ✅ **Customizable default title**: Players without a title display a configurable fallback
+- ✅ **RGB gradient support**: Enable colorful gradient titles/suffixes with custom colors
+- ✅ **Full localization**: One-click switch between Chinese and English, including command help and GUI
+- ✅ **PlaceholderAPI support**: Provides `%catcraft_title%` and `%catcraft_suffix%` placeholders
+- ✅ **Legacy color codes support**: `&e` format etc.
+- ✅ **Startup info banner**: Console displays server version, database status, PAPI status
 
+---
+## ⚠️ Notes
+- ⚠️ **PlaceholderAPI is required** as a prerequisite
+- ⚠️ If using PostgreSQL, ensure the server has the driver (already bundled)
+---
+## Unified Management of Titles and Suffixes - GUI Interface
+![guien](https://cdn.modrinth.com/data/cached_images/81b354ecabfd1952b60e249445f25473005830af.png)
+---
+## Supports Customizing Player Names and Chat Colors
+![test](https://cdn.modrinth.com/data/cached_images/67849a0bc9584f0ace606eb79d459997210c60eb.png)
 ---
 
 ## 📦 Supported Servers
 
-- Paper 1.16.x ~ 1.21.11  
-- Purpur 1.16.x ~ 1.21.11  
-- Spigot 1.16.x ~ 1.21.11  
-- Folia 1.16.x ~ 1.21.11  
-- Bukkit (not recommended, missing Paper API support)  
-- Sponge / BungeeCord / Velocity (not supported)
+- ✅ Paper 1.16.x ~ 1.21.11
+- ✅ Purpur 1.16.x ~ 1.21.11
+- ✅ Spigot 1.16.x ~ 1.21.11
+- ✅ Folia 1.16.x ~ 1.21.11
+- ❌ Bukkit (not recommended)
+- ❌ Sponge / BungeeCord / Velocity (not supported)
+
+---
+## 📦 Supported Databases
+
+- ✅ MySQL
+- ✅ PostgreSQL
 
 ---
 
@@ -65,37 +59,46 @@ CatCraftTitle is a player title and suffix management system designed to solve t
 
 | Dependency | Required | Description |
 |------------|----------|-------------|
-| PlaceholderAPI | Required | Essential dependency |
-| MySQL | Optional | Required for cross-server sync |
-
-If MySQL is not available, the plugin automatically falls back to SQLite local storage.
+| PlaceholderAPI | ⚠️ Required | Variable support |
+| MySQL / PostgreSQL | Optional | For cross-server sync |
 
 ---
 
 ## ⚙️ Player Commands
 
-| Command | Description | Permission |
-|--------|-------------|-----------|
-| /title list | View your title list and suffix status | Everyone |
-| /title active <ID> | Activate a specific title | Everyone |
-| /title deactive | Disable current title | Everyone |
-| /title remove <ID> | Remove one of your titles (permanent) | Everyone |
-| /title suffixactive | Enable suffix display | Everyone |
-| /title suffixdeactive | Disable suffix display | Everyone |
+| Command | Description |
+|---------|-------------|
+| `/title gui` | Open GUI management interface |
+| `/title list` | List all owned titles and suffixes with status |
+| `/title active <ID>` | Activate a title by ID |
+| `/title deactive` | Deactivate current title, revert to default |
+| `/title suffixactive <ID>` | Activate a suffix by ID |
+| `/title suffixdeactive` | Deactivate current suffix |
+| `/title remove <ID>` | Remove a title or suffix (cannot remove active one) |
 
 ---
 
-## 🛠️ Admin Commands
+## 🛠️ Admin Commands (require `catcraft.admin`)
 
-| Command | Description | Permission |
-|--------|-------------|-----------|
-| /titleadmin give <player> <ID> <display> | Give a title to a player | catcraft.admin |
-| /titleadmin edit <player> <ID> <new display> | Edit title display name | catcraft.admin |
-| /titleadmin take <player> <ID> | Remove a player's title | catcraft.admin |
-| /titleadmin list <player> | View player's titles and suffix | catcraft.admin |
-| /titleadmin setactive <player> <ID> | Force activate a title | catcraft.admin |
-| /titleadmin suffix <player> <suffix> | Set player suffix | catcraft.admin |
-| /titleadmin deactive <player> | Disable player's title | catcraft.admin |
+### Title Management
+| Command | Description |
+|---------|-------------|
+| `/titleadmin give <player> <ID> <display>` | Add a title to a player (ID must be globally unique) |
+| `/titleadmin edit <player> <ID> <new display>` | Edit a title's display name |
+| `/titleadmin take <player> <ID>` | Remove a title from a player (cannot remove active one) |
+| `/titleadmin list <player>` | List all titles of a player with status |
+| `/titleadmin setactive <player> <ID>` | Force activate a title for a player |
+| `/titleadmin deactive <player>` | Deactivate player's current title |
+
+### Suffix Management
+| Command | Description |
+|---------|-------------|
+| `/titleadmin suffixgive <player> <ID> <display>` | Add a suffix to a player (ID must be globally unique) |
+| `/titleadmin suffixedit <player> <ID> <new display>` | Edit a suffix's display name |
+| `/titleadmin suffixtake <player> <ID>` | Remove a suffix from a player (cannot remove active one) |
+| `/titleadmin suffixlist <player>` | List all suffixes of a player with status |
+| `/titleadmin suffixsetactive <player> <ID>` | Force activate a suffix for a player |
+| `/titleadmin suffixdeactive <player>` | Deactivate player's current suffix |
 
 ---
 
@@ -103,113 +106,148 @@ If MySQL is not available, the plugin automatically falls back to SQLite local s
 
 | Permission | Description |
 |------------|-------------|
-| catcraft.admin | Full admin access |
-| catcraft.title.set | Legacy compatibility permission |
+| `catcraft.admin` | Admin access, allows all `/titleadmin` commands |
+| `catcraft.title.set` | Legacy compatibility (not used) |
 
-By default, players can use all /title commands without extra permissions.
+> Note: Player commands do not require any permission.
 
 ---
 
 ## 📌 PlaceholderAPI Variables
 
-| Placeholder | Description | Example |
-|-------------|-------------|---------|
-| %catcraft_title% | Current active title (colored) | &d[Newbie Meow]&7 |
-| %catcraft_suffix% | Active suffix (if enabled) | &7★ |
+| Variable | Description |
+|----------|-------------|
+| `%catcraft_title%` | Current active title (colored/RGB) |
+| `%catcraft_suffix%` | Current active suffix (colored/RGB) |
 
 ---
 
-## ⚙️ Config File (Auto-generated)
+## ⚙️ Config File (auto-generated)
 
-mysql:
-  enabled: true
-  host: localhost
-  port: 3306
-  db: minecraft
-  user: root
-  pass: "your_password"
+```yaml
+# Language setting (zh / en)
+language: zh
 
-local-database:
-  file: catcraft.db
+# Database configuration
+database:
+  # Supported types: mysql, postgresql, sqlite
+  type: sqlite
+  mysql:
+    host: localhost
+    port: 3306
+    db: minecraft
+    user: root
+    pass: "your_password"
+  postgresql:
+    host: localhost
+    port: 5432
+    db: minecraft
+    user: root
+    pass: "your_password"
+  sqlite:
+    file: catcraft.db
 
 permissions:
   admin: "catcraft.admin"
 
+settings:
+  debug: true
+  enable-rgb: false          # Enable RGB gradient
+  check-update: true         # Enable update check
+  default-title: "&d[&dNewbie Meow]&7"   # Default fallback title
+  rgb-colors:                # Custom RGB color array
+    - "&x&F&F&0&0&0&0"
+    - "&x&F&F&4&0&F&F"
+    - "&x&8&0&4&0&F&F"
+
+# GUI custom titles
+gui:
+  home-title: "§6CatCraft Title Manager · Home"
+  title-page: "§6Title Management"
+  suffix-page: "§6Suffix Management"
+
+# All messages (bilingual)
+messages:
+  zh: { ... }
+  en: { ... }
+```
+
 ---
 
-## 📊 Database Structure
-
-### player_titles
+## 📊 Database Structure (unified table `player_titles`)
 
 | Column | Type | Description |
 |--------|------|-------------|
 | uuid | VARCHAR(36) | Player UUID |
-| title_id | INT | Title ID |
+| title_id | INT | Title ID (globally unique) |
 | title_display | VARCHAR(128) | Display name |
+| type | INT | 0=title, 1=suffix |
 | is_active | BOOLEAN | Whether active |
 
----
-
-### catcraft_titles
-
-| Column | Type | Description |
-|--------|------|-------------|
-| uuid | VARCHAR(36) | Player UUID |
-| suffix | VARCHAR(64) | Suffix content |
-| is_active | BOOLEAN | Whether enabled |
+> Titles and suffixes are stored in the same table, distinguished by `type`, ensuring global ID uniqueness per player.
 
 ---
 
 ## 🚀 Quick Start
 
-### Admin Workflow
+### 👑 Admin
 
-1. Give title  
-/titleadmin give [PlayerID] 1 &6[VIP]
+```bash
+# Add a title
+/titleadmin give QingNiao 1 &6[VIP]
 
-2. Edit title  
-/titleadmin edit [PlayerID] 1 &6[Super VIP]
+# Edit title
+/titleadmin edit QingNiao 1 &6[Super VIP]
 
-3. Set suffix  
-/titleadmin suffix [PlayerID] &7★
+# Add a suffix
+/titleadmin suffixgive QingNiao 100 &7★
 
-4. List titles  
-/titleadmin list [PlayerID]
+# Activate suffix
+/titleadmin suffixsetactive QingNiao 100
+
+# List all titles/suffixes of a player
+/titleadmin list QingNiao
+```
 
 ---
 
-### Player Workflow
+### 🎮 Player
 
-1. View titles  
+```bash
+# Open GUI
+/title gui
+
+# List all titles/suffixes
 /title list
 
-2. Activate title  
+# Activate title ID 1
 /title active 1
 
-3. Enable suffix  
-/title suffixactive
+# Activate suffix ID 100
+/title suffixactive 100
 
-4. Disable suffix  
+# Deactivate suffix
 /title suffixdeactive
+```
 
 ---
 
 ## ⚠️ FAQ
 
-Q: What if a player has no title?  
-A: Default display is “Newbie Meow”, configurable in TitleManager.DEFAULT_TITLE.
+**Q: What if a player has no title?**  
+A: The plugin displays the configured `default-title` (default: `&d[&dNewbie Meow]&7`)
 
-Q: Can title IDs be duplicated?  
-A: No. Each player cannot have duplicate IDs.
+**Q: What if MySQL/PostgreSQL connection fails?**  
+A: The plugin automatically falls back to SQLite – no manual action needed.
 
-Q: What if MySQL fails?  
-A: The plugin automatically switches to SQLite.
+**Q: Does it support RGB colors?**  
+A: Yes. Set `settings.enable-rgb` to `true` and customize `rgb-colors` array.
 
-Q: How to show titles in chat?  
-A: Use built-in ChatListener or %catcraft_title% placeholder.
+**Q: How to switch language?**  
+A: Change `language` to `zh` or `en` and restart the server.
 
-Q: Does it support RGB colors?  
-A: Yes, MiniMessage format is supported.
+**Q: Update check gives SSL error?**  
+A: Please upgrade Java to version 11 or higher; or manually import GitHub SSL certificate.
 
 ---
 
