@@ -8,145 +8,112 @@ public class TitlePlayerCommand implements CommandExecutor, TabCompleter {
     private final TitleManager manager;
     private static final String PREFIX = "&e[&eCatCraft] ";
 
-    public TitlePlayerCommand(TitleManager manager) {
-        this.manager = manager;
-    }
+    public TitlePlayerCommand(TitleManager manager) { this.manager = manager; }
 
-    @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        // 修改：使用传统 instanceof 写法，兼容 Java 8
         if (!(sender instanceof Player)) {
-            sender.sendMessage(ColorUtil.color(PREFIX + "§c该命令仅限玩家执行"));
+            sender.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("player-only-command")));
             return true;
         }
         Player p = (Player) sender;
-
-        if (args.length == 0) {
-            sendHelp(p);
-            return true;
-        }
-
+        if (args.length == 0) { sendHelp(p); return true; }
         String sub = args[0].toLowerCase();
         switch (sub) {
+            case "gui": TitleGUI.openHome(p); break;
             case "list": {
                 Map<Integer, String> titles = manager.getOwnedTitles(p);
-                int activeId = manager.getActiveId(p);
-                DatabaseManager.SuffixData suffixData = manager.getSuffixData(p);
-
-                p.sendMessage(ColorUtil.color(PREFIX + "§6===== 我的头衔列表 ====="));
-                if (titles.isEmpty()) {
-                    p.sendMessage(ColorUtil.color(PREFIX + "§e你还没有任何头衔，请联系管理员添加。"));
-                } else {
-                    for (Map.Entry<Integer, String> entry : titles.entrySet()) {
-                        String status = (entry.getKey() == activeId) ? "§a[启用]" : "§7[未启用]";
-                        p.sendMessage(ColorUtil.color(PREFIX + "§f- §7ID:" + entry.getKey() + " " +
-                                ColorUtil.color(entry.getValue()) + " " + status));
+                Map<Integer, String> suffixes = manager.getOwnedSuffixes(p);
+                int activeTitle = manager.getActiveTitleId(p);
+                int activeSuffix = manager.getActiveSuffixId(p);
+                p.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("player-list-header")));
+                if (titles.isEmpty() && suffixes.isEmpty()) p.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("player-list-empty")));
+                else {
+                    p.sendMessage(ColorUtil.color(PREFIX + "§6--- " + MessageManager.get("title") + " ---"));
+                    if (titles.isEmpty()) p.sendMessage(ColorUtil.color(PREFIX + "§7" + MessageManager.get("none")));
+                    else for (Map.Entry<Integer, String> entry : titles.entrySet()) {
+                        String status = (entry.getKey() == activeTitle) ? "§a[启用]" : "§7[未启用]";
+                        p.sendMessage(ColorUtil.color(PREFIX + "§f- §7ID:" + entry.getKey() + " " + ColorUtil.color(entry.getValue()) + " " + status));
+                    }
+                    p.sendMessage(ColorUtil.color(PREFIX + "§6--- " + MessageManager.get("suffix") + " ---"));
+                    if (suffixes.isEmpty()) p.sendMessage(ColorUtil.color(PREFIX + "§7" + MessageManager.get("none")));
+                    else for (Map.Entry<Integer, String> entry : suffixes.entrySet()) {
+                        String status = (entry.getKey() == activeSuffix) ? "§a[启用]" : "§7[未启用]";
+                        p.sendMessage(ColorUtil.color(PREFIX + "§f- §7ID:" + entry.getKey() + " " + ColorUtil.color(entry.getValue()) + " " + status));
                     }
                 }
-
-                String suffixStatus = suffixData.active ? "§a[启用]" : "§c[已关闭]";
-                String suffixDisplay = suffixData.suffix.isEmpty() ? "§7(未设置)" : ColorUtil.color(suffixData.suffix);
-                p.sendMessage(ColorUtil.color(PREFIX + "§6----- 后缀信息 -----"));
-                p.sendMessage(ColorUtil.color(PREFIX + "§f- 后缀: " + suffixDisplay + " " + suffixStatus));
-                p.sendMessage(ColorUtil.color(PREFIX + "§7使用 §e/title suffixactive §7启用 · §e/title suffixdeactive §7关闭"));
+                p.sendMessage(ColorUtil.color(PREFIX + "§7" + MessageManager.get("player-list-hint")));
                 break;
             }
             case "active": {
-                if (args.length < 2) {
-                    p.sendMessage(ColorUtil.color(PREFIX + "§e用法: /title active <ID>"));
-                    return true;
-                }
+                if (args.length < 2) { p.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("player-active-usage"))); return true; }
                 int id;
-                try {
-                    id = Integer.parseInt(args[1]);
-                } catch (NumberFormatException e) {
-                    p.sendMessage(ColorUtil.color(PREFIX + "§c请输入数字ID"));
-                    return true;
-                }
-                if (!manager.getOwnedTitles(p).containsKey(id)) {
-                    p.sendMessage(ColorUtil.color(PREFIX + "§c你未拥有此头衔"));
-                    return true;
-                }
-                if (manager.activateTitle(p, id)) {
-                    p.sendMessage(ColorUtil.color(PREFIX + "§a已启用头衔 ID:" + id));
-                } else {
-                    p.sendMessage(ColorUtil.color(PREFIX + "§c启用失败"));
-                }
+                try { id = Integer.parseInt(args[1]); } catch (NumberFormatException e) { p.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("invalid-id"))); return true; }
+                if (!manager.getOwnedTitles(p).containsKey(id)) { p.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("no-title"))); return true; }
+                if (manager.activateTitle(p, id)) p.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("player-active-success", id)));
+                else p.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("player-active-fail")));
                 break;
             }
             case "deactive": {
-                if (manager.deactivateTitle(p)) {
-                    p.sendMessage(ColorUtil.color(PREFIX + "§a已停用当前头衔，恢复默认"));
-                } else {
-                    p.sendMessage(ColorUtil.color(PREFIX + "§c停用失败"));
-                }
-                break;
-            }
-            case "remove": {
-                if (args.length < 2) {
-                    p.sendMessage(ColorUtil.color(PREFIX + "§e用法: /title remove <ID>"));
-                    return true;
-                }
-                int id;
-                try {
-                    id = Integer.parseInt(args[1]);
-                } catch (NumberFormatException e) {
-                    p.sendMessage(ColorUtil.color(PREFIX + "§c请输入数字ID"));
-                    return true;
-                }
-                if (!manager.getOwnedTitles(p).containsKey(id)) {
-                    p.sendMessage(ColorUtil.color(PREFIX + "§c你没有此头衔"));
-                    return true;
-                }
-                if (manager.removeTitle(p, id)) {
-                    p.sendMessage(ColorUtil.color(PREFIX + "§a已移除头衔 ID:" + id));
-                } else {
-                    p.sendMessage(ColorUtil.color(PREFIX + "§c无法移除当前启用的头衔，请先停用"));
-                }
+                if (manager.deactivateTitle(p)) p.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("player-deactive-success")));
+                else p.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("player-deactive-fail")));
                 break;
             }
             case "suffixactive": {
-                if (manager.setSuffixActive(p, true)) {
-                    p.sendMessage(ColorUtil.color(PREFIX + "§a已启用后缀显示"));
-                } else {
-                    p.sendMessage(ColorUtil.color(PREFIX + "§c启用失败，请先设置后缀内容"));
-                }
+                if (args.length < 2) { p.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("player-suffixactive-usage"))); return true; }
+                int id;
+                try { id = Integer.parseInt(args[1]); } catch (NumberFormatException e) { p.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("invalid-id"))); return true; }
+                if (!manager.getOwnedSuffixes(p).containsKey(id)) { p.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("no-suffix"))); return true; }
+                if (manager.activateSuffix(p, id)) p.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("player-suffixactive-success", id)));
+                else p.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("player-suffixactive-fail")));
                 break;
             }
             case "suffixdeactive": {
-                if (manager.setSuffixActive(p, false)) {
-                    p.sendMessage(ColorUtil.color(PREFIX + "§a已关闭后缀显示"));
-                } else {
-                    p.sendMessage(ColorUtil.color(PREFIX + "§c关闭失败"));
-                }
+                if (manager.deactivateSuffix(p)) p.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("player-suffixdeactive-success")));
+                else p.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("player-suffixdeactive-fail")));
                 break;
             }
-            default:
-                sendHelp(p);
+            case "remove": {
+                if (args.length < 2) { p.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("player-remove-usage"))); return true; }
+                int id;
+                try { id = Integer.parseInt(args[1]); } catch (NumberFormatException e) { p.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("invalid-id"))); return true; }
+                if (!manager.getOwnedTitles(p).containsKey(id) && !manager.getOwnedSuffixes(p).containsKey(id)) {
+                    p.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("no-such-id")));
+                    return true;
+                }
+                if (manager.removeTitle(p, id)) p.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("player-remove-success", id)));
+                else p.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("player-remove-fail")));
+                break;
+            }
+            default: sendHelp(p);
         }
         return true;
     }
 
+    // 使用新的全行键
     private void sendHelp(Player p) {
-        p.sendMessage(ColorUtil.color(PREFIX + "§6===== 玩家头衔指令 ====="));
-        p.sendMessage(ColorUtil.color(PREFIX + "§e/title list §7- 查看头衔列表和后缀状态"));
-        p.sendMessage(ColorUtil.color(PREFIX + "§e/title active <ID> §7- 启用某个头衔"));
-        p.sendMessage(ColorUtil.color(PREFIX + "§e/title deactive §7- 停用当前头衔，恢复默认"));
-        p.sendMessage(ColorUtil.color(PREFIX + "§e/title remove <ID> §7- 移除自己的某个头衔（不可移除激活的）"));
-        p.sendMessage(ColorUtil.color(PREFIX + "§e/title suffixactive §7- 启用后缀显示"));
-        p.sendMessage(ColorUtil.color(PREFIX + "§e/title suffixdeactive §7- 关闭后缀显示"));
+        p.sendMessage(ColorUtil.color(PREFIX + "§6===== " + MessageManager.get("player-help-title") + " ====="));
+        p.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("player-help-gui-line")));
+        p.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("player-help-list-line")));
+        p.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("player-help-active-line")));
+        p.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("player-help-deactive-line")));
+        p.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("player-help-suffixactive-line")));
+        p.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("player-help-suffixdeactive-line")));
+        p.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("player-help-remove-line")));
     }
 
-    @Override
     public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args) {
         List<String> completions = new ArrayList<>();
         if (args.length == 1) {
-            completions.addAll(Arrays.asList("list", "active", "deactive", "remove", "suffixactive", "suffixdeactive"));
-        } else if (args.length == 2 && (args[0].equalsIgnoreCase("active") || args[0].equalsIgnoreCase("remove"))) {
-            Player p = (Player) sender;
-            Map<Integer, String> titles = manager.getOwnedTitles(p);
-            for (Integer id : titles.keySet()) {
-                completions.add(id.toString());
+            completions.addAll(Arrays.asList("gui","list","active","deactive","suffixactive","suffixdeactive","remove"));
+        } else if (args.length == 2) {
+            if (args[0].equalsIgnoreCase("active") || args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("suffixactive")) {
+                Player p = (Player) sender;
+                if (args[0].equalsIgnoreCase("active") || args[0].equalsIgnoreCase("remove")) {
+                    for (Integer id : manager.getOwnedTitles(p).keySet()) completions.add(id.toString());
+                }
+                if (args[0].equalsIgnoreCase("suffixactive") || args[0].equalsIgnoreCase("remove")) {
+                    for (Integer id : manager.getOwnedSuffixes(p).keySet()) completions.add(id.toString());
+                }
             }
         }
         return completions;

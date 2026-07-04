@@ -3,17 +3,27 @@
 #  ██      ███████    ██    ██      ██████  ███████ █████      ██
 #  ██      ██   ██    ██    ██      ██   ██ ██   ██ ██         ██
 #  ██████  ██   ██    ██     ██████ ██   ██ ██   ██ ██         ██
+# 语言设置 (zh / en) | Language setting (zh / en)
+language: zh
 
-mysql:
-  enabled: true
-  host: localhost
-  port: 3306
-  db: your_db
-  user: your_user
-  pass: your_pass
-
-local-database:
-  file: catcraft.db
+# 数据库配置 | Database configuration
+database:
+  # 支持类型: mysql, postgresql, sqlite | Supported types: mysql, postgresql, sqlite
+  type: sqlite
+  mysql:
+    host: localhost
+    port: 3306
+    db: your_db
+    user: your_user
+    pass: your_pass
+  postgresql:
+    host: localhost
+    port: 5432
+    db: your_db
+    user: your_user
+    pass: your_pass
+  sqlite:
+    file: catcraft.db
 
 permissions:
   set-title: "catcraft.title.set"
@@ -25,17 +35,283 @@ settings:
   check-update: true
 
 messages:
-  no-permission: "&c你没有权限执行此操作"
-  set-success: "&a成功设置玩家头衔"
-  reload: "&a配置已重载"
+  zh:
+    no-permission: "&c你没有权限执行此操作"
+    player-only-command: "&c该命令仅限玩家执行"
+    player-offline: "&c玩家不在线"
+    invalid-id: "&cID必须是数字"
+    id-already-owned: "&c该玩家已拥有此ID的称号（头衔或后缀），ID必须全局唯一！"
+    no-such-id: "&c该玩家没有此ID的称号"
+    not-title: "&c该ID不是头衔，请使用 suffixedit 修改后缀"
+    not-suffix: "&c该ID不是后缀，请使用 edit 修改头衔"
+    no-title: "&c你未拥有此头衔"
+    no-suffix: "&c你未拥有此后缀"
+    none: "无"
+    title: "头衔"
+    suffix: "后缀"
 
-usage:
-  commands:
-    - "/title set <玩家> <头衔>  → 设置头衔"
-    - "/title suffix <玩家> <后缀> → 设置后缀"
-    - "/title reload → 重载插件"
-  placeholders:
-    - "%catcraft_title% → 玩家头衔"
-    - "%catcraft_suffix% → 玩家后缀"
-  rgb:
-    - "&x&F&F&0&0&0&0 → 红色渐变格式"
+    admin-give-usage: "用法: /titleadmin %s <玩家> <ID> <显示名>"
+    admin-edit-usage: "用法: /titleadmin %s <玩家> <ID> <新显示名>"
+    admin-take-usage: "用法: /titleadmin %s <玩家> <ID>"
+    admin-list-usage: "用法: /titleadmin %s <玩家>"
+    admin-setactive-usage: "用法: /titleadmin %s <玩家> <ID>"
+    admin-deactive-usage: "用法: /titleadmin %s <玩家>"
+    admin-give-success: "&a已为 %s 添加%s ID:%d 显示: %s"
+    admin-give-fail: "&c添加失败，请检查控制台日志"
+    admin-edit-success: "&a已修改 %s 的%s ID:%d 为: %s"
+    admin-edit-fail: "&c修改失败，请检查控制台日志"
+    admin-take-success: "&a已移除 %s 的%s ID:%d"
+    admin-take-fail: "&c移除失败（可能该称号正在启用）"
+    admin-list-title-header: "&6===== %s 的头衔列表 ====="
+    admin-list-suffix-header: "&6===== %s 的后缀列表 ====="
+    admin-list-empty: "&e无"
+    admin-setactive-success: "&a已激活 %s 的%s ID:%d"
+    admin-setactive-fail: "&c激活失败（玩家可能未拥有该称号）"
+    admin-deactive-success: "&a已停用 %s 的%s"
+    admin-deactive-fail: "&c停用失败"
+
+    player-list-header: "&6===== 我的称号列表 ====="
+    player-list-empty: "&e你还没有任何称号，请联系管理员添加。"
+    player-list-hint: "使用 /title gui 打开图形界面"
+    player-active-usage: "用法: /title active <ID>"
+    player-active-success: "&a已启用头衔 ID:%d"
+    player-active-fail: "&c启用失败"
+    player-deactive-success: "&a已停用当前头衔，恢复默认"
+    player-deactive-fail: "&c停用失败"
+    player-suffixactive-usage: "用法: /title suffixactive <ID>"
+    player-suffixactive-success: "&a已启用后缀 ID:%d"
+    player-suffixactive-fail: "&c启用失败"
+    player-suffixdeactive-success: "&a已停用当前后缀"
+    player-suffixdeactive-fail: "&c停用失败"
+    player-remove-usage: "用法: /title remove <ID>"
+    player-remove-success: "&a已移除称号 ID:%d"
+    player-remove-fail: "&c无法移除当前启用的称号，请先停用"
+
+    player-help-title: "玩家称号指令"
+    help-gui: "打开图形界面"
+    help-list: "查看所有称号"
+    help-active: "激活头衔"
+    help-deactive: "停用头衔"
+    help-suffixactive: "激活后缀"
+    help-suffixdeactive: "停用后缀"
+    help-remove: "移除称号（不可移除激活的）"
+
+    # 管理员帮助（使用 admin-help- 前缀，避免与玩家帮助冲突）
+    admin-help-give: "添加头衔"
+    admin-help-edit: "修改头衔"
+    admin-help-take: "移除头衔"
+    admin-help-list: "查看玩家头衔"
+    admin-help-setactive: "激活头衔"
+    admin-help-deactive: "停用头衔"
+    admin-help-suffixgive: "添加后缀"
+    admin-help-suffixedit: "修改后缀"
+    admin-help-suffixtake: "移除后缀"
+    admin-help-suffixlist: "查看玩家后缀"
+    admin-help-suffixsetactive: "激活后缀"
+    admin-help-suffixdeactive: "停用后缀"
+
+    update-disabled: "更新检测已关闭"
+    update-available: "CatCraftTitle 有新版本可用！"
+    update-current: "当前版本:"
+    update-latest: "最新版本:"
+    update-download: "下载地址:"
+    update-api-error: "GitHub API 返回错误码: %d"
+    update-parse-error: "无法解析 tag_name"
+    update-fail: "更新检测失败: %s"
+
+    gui-home-title: "§6CatCraft称号管理 · 主页"
+    admin-help-title: "管理员称号指令"
+    gui-head-lore: "§7点击进入称号管理"
+    gui-title-btn: "§6头衔管理"
+    gui-title-lore1: "§7点击查看所有头衔"
+    gui-title-lore2: "§7当前激活: "
+    gui-suffix-btn: "§6后缀管理"
+    gui-suffix-lore1: "§7点击查看所有后缀"
+    gui-suffix-lore2: "§7当前激活: "
+    gui-close: "§c关闭"
+    gui-close-lore: "§7点击关闭界面"
+    gui-none: "§7无"
+    gui-deleted: "§7已删除"
+    gui-title-page: "§6头衔管理"
+    gui-suffix-page: "§6后缀管理"
+    gui-back-home: "§e返回主页"
+    gui-back-home-lore: "§7点击返回"
+    gui-current-active: "§a当前激活"
+    gui-deactivate: "§c停用"
+    gui-deactivate-lore: "§7点击停用当前激活的称号"
+    gui-id: "§7ID: "
+    gui-active: "§a★ 已激活"
+    gui-click-activate: "§7点击激活"
+    gui-previous: "§6上一页"
+    gui-next: "§6下一页"
+    banner-author: "插件作者：&eQingNiaoQaQ &7(CatCraft Team)"
+    banner-server: "服务器:"
+    banner-database: "数据库:"
+    banner-papi: "PlaceholderAPI: "
+    banner-connected: "已连接"
+    banner-failed: "连接失败"
+    banner-found: "已找到"
+    banner-not-found: "未找到"
+    banner-disconnected: "未连接"
+    # 管理员帮助完整行
+    admin-help-give-line: "§e/titleadmin give §f<玩家> <ID> <显示名> §7- 添加头衔"
+    admin-help-edit-line: "§e/titleadmin edit §f<玩家> <ID> <新显示名> §7- 修改头衔"
+    admin-help-take-line: "§e/titleadmin take §f<玩家> <ID> §7- 移除头衔"
+    admin-help-list-line: "§e/titleadmin list §f<玩家> §7- 查看玩家头衔"
+    admin-help-setactive-line: "§e/titleadmin setactive §f<玩家> <ID> §7- 激活头衔"
+    admin-help-deactive-line: "§e/titleadmin deactive §f<玩家> §7- 停用头衔"
+    admin-help-suffixgive-line: "§e/titleadmin suffixgive §f<玩家> <ID> <显示名> §7- 添加后缀"
+    admin-help-suffixedit-line: "§e/titleadmin suffixedit §f<玩家> <ID> <新显示名> §7- 修改后缀"
+    admin-help-suffixtake-line: "§e/titleadmin suffixtake §f<玩家> <ID> §7- 移除后缀"
+    admin-help-suffixlist-line: "§e/titleadmin suffixlist §f<玩家> §7- 查看玩家后缀"
+    admin-help-suffixsetactive-line: "§e/titleadmin suffixsetactive §f<玩家> <ID> §7- 激活后缀"
+    admin-help-suffixdeactive-line: "§e/titleadmin suffixdeactive §f<玩家> §7- 停用后缀"
+
+    # 玩家帮助完整行
+    player-help-gui-line: "§e/title gui §7- 打开图形界面"
+    player-help-list-line: "§e/title list §7- 查看所有称号"
+    player-help-active-line: "§e/title active §f<ID> §7- 激活头衔"
+    player-help-deactive-line: "§e/title deactive §7- 停用头衔"
+    player-help-suffixactive-line: "§e/title suffixactive §f<ID> §7- 激活后缀"
+    player-help-suffixdeactive-line: "§e/title suffixdeactive §7- 停用后缀"
+    player-help-remove-line: "§e/title remove §f<ID> §7- 移除称号（不可移除激活的）"
+
+  en:
+    no-permission: "&cYou do not have permission"
+    player-only-command: "&cThis command is for players only"
+    player-offline: "&cPlayer is offline"
+    invalid-id: "&cID must be a number"
+    id-already-owned: "&cPlayer already owns this ID (title or suffix), ID must be globally unique!"
+    no-such-id: "&cPlayer does not have this ID"
+    not-title: "&cThis ID is not a title, use suffixedit to modify suffix"
+    not-suffix: "&cThis ID is not a suffix, use edit to modify title"
+    no-title: "&cYou do not own this title"
+    no-suffix: "&cYou do not own this suffix"
+    none: "None"
+    title: "Title"
+    suffix: "Suffix"
+
+    admin-give-usage: "Usage: /titleadmin %s <player> <ID> <display>"
+    admin-edit-usage: "Usage: /titleadmin %s <player> <ID> <new display>"
+    admin-take-usage: "Usage: /titleadmin %s <player> <ID>"
+    admin-list-usage: "Usage: /titleadmin %s <player>"
+    admin-setactive-usage: "Usage: /titleadmin %s <player> <ID>"
+    admin-deactive-usage: "Usage: /titleadmin %s <player>"
+    admin-give-success: "&aAdded %s to %s ID:%d display: %s"
+    admin-give-fail: "&cAdd failed, check console logs"
+    admin-edit-success: "&aModified %s's %s ID:%d to: %s"
+    admin-edit-fail: "&cModify failed, check console logs"
+    admin-take-success: "&aRemoved %s's %s ID:%d"
+    admin-take-fail: "&cRemove failed (maybe active)"
+    admin-list-title-header: "&6===== %s's Titles ====="
+    admin-list-suffix-header: "&6===== %s's Suffixes ====="
+    admin-list-empty: "&eNone"
+    admin-setactive-success: "&aActivated %s's %s ID:%d"
+    admin-setactive-fail: "&cActivation failed (player may not own it)"
+    admin-deactive-success: "&aDeactivated %s's %s"
+    admin-deactive-fail: "&cDeactivation failed"
+
+    player-list-header: "&6===== My Titles and Suffixes ====="
+    player-list-empty: "&eYou don't have any titles or suffixes yet."
+    player-list-hint: "Use /title gui to open GUI"
+    player-active-usage: "Usage: /title active <ID>"
+    player-active-success: "&aActivated title ID:%d"
+    player-active-fail: "&cActivation failed"
+    player-deactive-success: "&aDeactivated current title, reset to default"
+    player-deactive-fail: "&cDeactivation failed"
+    player-suffixactive-usage: "Usage: /title suffixactive <ID>"
+    player-suffixactive-success: "&aActivated suffix ID:%d"
+    player-suffixactive-fail: "&cActivation failed"
+    player-suffixdeactive-success: "&aDeactivated current suffix"
+    player-suffixdeactive-fail: "&cDeactivation failed"
+    player-remove-usage: "Usage: /title remove <ID>"
+    player-remove-success: "&aRemoved title/suffix ID:%d"
+    player-remove-fail: "&cCannot remove active title/suffix, deactivate first"
+
+    player-help-title: "Player Title Commands"
+    help-gui: "Open GUI"
+    help-list: "List all titles/suffixes"
+    help-active: "Activate title"
+    help-deactive: "Deactivate title"
+    help-suffixactive: "Activate suffix"
+    help-suffixdeactive: "Deactivate suffix"
+    help-remove: "Remove title/suffix (cannot remove active)"
+
+    admin-help-give: "Add title"
+    admin-help-edit: "Edit title"
+    admin-help-take: "Remove title"
+    admin-help-list: "View player's titles"
+    admin-help-setactive: "Activate title"
+    admin-help-deactive: "Deactivate title"
+    admin-help-suffixgive: "Add suffix"
+    admin-help-suffixedit: "Edit suffix"
+    admin-help-suffixtake: "Remove suffix"
+    admin-help-suffixlist: "View player's suffixes"
+    admin-help-suffixsetactive: "Activate suffix"
+    admin-help-suffixdeactive: "Deactivate suffix"
+
+    update-disabled: "Update check disabled"
+    update-available: "CatCraftTitle has a new update!"
+    update-current: "Current version:"
+    update-latest: "Latest version:"
+    update-download: "Download:"
+    update-api-error: "GitHub API error code: %d"
+    update-parse-error: "Failed to parse tag_name"
+    update-fail: "Update check failed: %s"
+    admin-help-title: "Admin Title Commands"
+    gui-head-lore: "§7Click to manage titles"
+    gui-title-btn: "§6Title Management"
+    gui-title-lore1: "§7Click to view all titles"
+    gui-title-lore2: "§7Current active: "
+    gui-suffix-btn: "§6Suffix Management"
+    gui-suffix-lore1: "§7Click to view all suffixes"
+    gui-suffix-lore2: "§7Current active: "
+    gui-close: "§cClose"
+    gui-close-lore: "§7Click to close"
+    gui-none: "§7None"
+    gui-deleted: "§7Deleted"
+    gui-title-page: "§6Title Management"
+    gui-suffix-page: "§6Suffix Management"
+    gui-back-home: "§eBack to Home"
+    gui-back-home-lore: "§7Click to return"
+    gui-current-active: "§aCurrent Active"
+    gui-deactivate: "§cDeactivate"
+    gui-deactivate-lore: "§7Click to deactivate current"
+    gui-id: "§7ID: "
+    gui-active: "§a★ Active"
+    gui-click-activate: "§7Click to activate"
+    gui-previous: "§6Previous Page"
+    gui-next: "§6Next Page"
+    banner-author: "Plugin Author: &eQingNiaoQaQ &7(CatCraft Team)"
+    banner-server: "Server:"
+    banner-database: "Database:"
+    banner-papi: "PlaceholderAPI: "
+    banner-connected: "Connected"
+    banner-failed: "Failed"
+    banner-found: "Found"
+    banner-not-found: "Not Found"
+    banner-disconnected: "Disconnected"
+    # Admin help full lines
+    admin-help-give-line: "§e/titleadmin give §f<player> <ID> <display> §7- Add title"
+    admin-help-edit-line: "§e/titleadmin edit §f<player> <ID> <new display> §7- Edit title"
+    admin-help-take-line: "§e/titleadmin take §f<player> <ID> §7- Remove title"
+    admin-help-list-line: "§e/titleadmin list §f<player> §7- View player's titles"
+    admin-help-setactive-line: "§e/titleadmin setactive §f<player> <ID> §7- Activate title"
+    admin-help-deactive-line: "§e/titleadmin deactive §f<player> §7- Deactivate title"
+    admin-help-suffixgive-line: "§e/titleadmin suffixgive §f<player> <ID> <display> §7- Add suffix"
+    admin-help-suffixedit-line: "§e/titleadmin suffixedit §f<player> <ID> <new display> §7- Edit suffix"
+    admin-help-suffixtake-line: "§e/titleadmin suffixtake §f<player> <ID> §7- Remove suffix"
+    admin-help-suffixlist-line: "§e/titleadmin suffixlist §f<player> §7- View player's suffixes"
+    admin-help-suffixsetactive-line: "§e/titleadmin suffixsetactive §f<player> <ID> §7- Activate suffix"
+    admin-help-suffixdeactive-line: "§e/titleadmin suffixdeactive §f<player> §7- Deactivate suffix"
+
+    # Player help full lines
+    player-help-gui-line: "§e/title gui §7- Open GUI"
+    player-help-list-line: "§e/title list §7- List all titles/suffixes"
+    player-help-active-line: "§e/title active §f<ID> §7- Activate title"
+    player-help-deactive-line: "§e/title deactive §7- Deactivate title"
+    player-help-suffixactive-line: "§e/title suffixactive §f<ID> §7- Activate suffix"
+    player-help-suffixdeactive-line: "§e/title suffixdeactive §7- Deactivate suffix"
+    player-help-remove-line: "§e/title remove §f<ID> §7- Remove title/suffix (cannot remove active)"
+
+    gui-home-title: "§6CatCraft Title Manager · Home"
