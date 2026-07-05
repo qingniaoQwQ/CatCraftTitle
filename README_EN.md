@@ -4,7 +4,7 @@
 
 ---
 
-## 🎯 Plugin Overview
+##  Plugin Overview
 
 CatCraftTitle is a **lightweight, fully-featured Minecraft title and suffix management plugin** with GUI support, full bilingual support (Chinese/English), and multiple database backends (MySQL, PostgreSQL, SQLite). It enables servers to easily implement a player title system with cross-server synchronization.
 
@@ -55,7 +55,7 @@ CatCraftTitle is a **lightweight, fully-featured Minecraft title and suffix mana
 
 ---
 
-## 🔧 Requirements
+##  Requirements
 
 | Dependency | Required | Description |
 |------------|----------|-------------|
@@ -64,7 +64,7 @@ CatCraftTitle is a **lightweight, fully-featured Minecraft title and suffix mana
 
 ---
 
-## ⚙️ Player Commands
+##  Player Commands
 
 | Command | Description |
 |---------|-------------|
@@ -78,7 +78,7 @@ CatCraftTitle is a **lightweight, fully-featured Minecraft title and suffix mana
 
 ---
 
-## 🛠️ Admin Commands (require `catcraft.admin`)
+##  Admin Commands (require `catcraft.admin`)
 
 ### Title Management
 | Command | Description |
@@ -102,7 +102,7 @@ CatCraftTitle is a **lightweight, fully-featured Minecraft title and suffix mana
 
 ---
 
-## 🔐 Permissions
+##  Permissions
 
 | Permission | Description |
 |------------|-------------|
@@ -113,7 +113,7 @@ CatCraftTitle is a **lightweight, fully-featured Minecraft title and suffix mana
 
 ---
 
-## 📌 PlaceholderAPI Variables
+##  PlaceholderAPI Variables
 
 | Variable | Description |
 |----------|-------------|
@@ -122,7 +122,7 @@ CatCraftTitle is a **lightweight, fully-featured Minecraft title and suffix mana
 
 ---
 
-## ⚙️ Config File (auto-generated)
+##  Config File (auto-generated)
 
 ```yaml
 # Language setting (zh / en)
@@ -174,7 +174,7 @@ messages:
 
 ---
 
-## 📊 Database Structure (unified table `player_titles`)
+## Database Structure (unified table `player_titles`)
 
 | Column | Type | Description |
 |--------|------|-------------|
@@ -188,9 +188,9 @@ messages:
 
 ---
 
-## 🚀 Quick Start
+##  Quick Start
 
-### 👑 Admin
+###  Admin
 
 ```bash
 # Add a title
@@ -211,7 +211,7 @@ messages:
 
 ---
 
-### 🎮 Player
+###  Player
 
 ```bash
 # Open GUI
@@ -251,13 +251,13 @@ A: Please upgrade Java to version 11 or higher; or manually import GitHub SSL ce
 
 ---
 
-## 📜 License
+##  License
 
 MIT License — free to use, modify, and distribute with attribution.
 
 ---
 
-## 👨‍💻 Author
+##  Author
 
 QingNiaoQaQ (CatCraft Team)  
 GitHub: https://github.com/qingniaoQwQ
