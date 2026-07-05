@@ -10,7 +10,7 @@ CatCraftTitle is a **lightweight, fully-featured Minecraft title and suffix mana
 
 ![CatCraft](https://cdn.modrinth.com/data/cached_images/9996397931ad9af01a23f81aa956ae9dfcf9a80b.png)
 
-## ✨ Features
+##  Features
 
 - ✅ **Multi-title system**: Each player can own multiple titles, managed by unique IDs, freely switchable
 - ✅ **Independent suffix system**: Titles and suffixes are separated; players can enable/disable each suffix individually
