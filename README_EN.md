@@ -40,10 +40,10 @@ CatCraftTitle is a **lightweight, fully-featured Minecraft title and suffix mana
 
 ## 📦 Supported Servers
 
-- ✅ Paper 1.16.x ~ 1.21.11
-- ✅ Purpur 1.16.x ~ 1.21.11
-- ✅ Spigot 1.16.x ~ 1.21.11
-- ✅ Folia 1.16.x ~ 1.21.11
+- ✅ Paper 1.16.x ~ 26.2
+- ✅ Purpur 1.16.x ~ 26.2
+- ✅ Spigot 1.16.x ~ 26.2
+- ✅ Folia 1.16.x ~ 26.2
 - ❌ Bukkit (not recommended)
 - ❌ Sponge / BungeeCord / Velocity (not supported)
 
