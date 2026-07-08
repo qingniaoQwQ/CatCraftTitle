@@ -23,7 +23,12 @@ public class CatCraftTitlePlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ChatListener(manager), this);
         getServer().getPluginManager().registerEvents(new TitleGUIListener(), this);
 
-        new CatCraftExpansion(manager).register();
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            new CatCraftExpansion(manager).register();
+            getLogger().info("PlaceholderAPI 扩展已注册。");
+        } else {
+            getLogger().warning("PlaceholderAPI 未启用，跳过占位符扩展注册。");
+        }
 
         TitlePlayerCommand playerCmd = new TitlePlayerCommand(manager);
         getCommand("title").setExecutor(playerCmd);
@@ -32,6 +37,11 @@ public class CatCraftTitlePlugin extends JavaPlugin {
         TitleAdminCommand adminCmd = new TitleAdminCommand(manager);
         getCommand("titleadmin").setExecutor(adminCmd);
         getCommand("titleadmin").setTabCompleter(adminCmd);
+
+        try {
+            Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
+            getLogger().info("检测到 Folia 服务端，已启用区域调度兼容模式。");
+        } catch (ClassNotFoundException ignored) {}
 
         printBanner();
 

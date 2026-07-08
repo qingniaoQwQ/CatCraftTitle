@@ -20,13 +20,15 @@ public class TitleGUI {
     public static void openHome(Player player) {
         Inventory inv = Bukkit.createInventory(new GUIHolder(player.getUniqueId(), PageType.HOME, 0), 54, MessageManager.get("gui-home-title"));
 
+
         ItemStack head = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta meta = (SkullMeta) head.getItemMeta();
         meta.setOwningPlayer(player);
         meta.setDisplayName("§a" + player.getName());
-        meta.setLore(Collections.singletonList(MessageManager.get("gui-head-lore")));
+
         head.setItemMeta(meta);
         inv.setItem(4, head);
+
 
         ItemStack titleBtn = createItem(Material.BOOK,
                 MessageManager.get("gui-title-btn"),
