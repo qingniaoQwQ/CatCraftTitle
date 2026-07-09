@@ -6,7 +6,8 @@
 
 ##  Plugin Overview
 
-CatCraftTitle is a **lightweight, fully-featured Minecraft title and suffix management plugin** with GUI support, full bilingual support (Chinese/English), and multiple database backends (MySQL, PostgreSQL, SQLite). It enables servers to easily implement a player title system with cross-server synchronization.
+CatCraftTitle is a **lightweight, fully-featured Minecraft title and suffix management plugin** with GUI support, full bilingual support (Chinese/English), and multiple database backends (MySQL, PostgreSQL, SQLite). It enables servers to easily implement a player title system with cross-server synchronization.  
+**Built-in shop system** allows players to purchase titles with coins, plus a daily sign-in feature.
 
 ![CatCraft](https://cdn.modrinth.com/data/cached_images/9996397931ad9af01a23f81aa956ae9dfcf9a80b.png)
 
@@ -22,14 +23,17 @@ CatCraftTitle is a **lightweight, fully-featured Minecraft title and suffix mana
 - ✅ **Customizable default title**: Players without a title display a configurable fallback
 - ✅ **RGB gradient support**: Enable colorful gradient titles/suffixes with custom colors
 - ✅ **Full localization**: One-click switch between Chinese and English, including command help and GUI
-- ✅ **PlaceholderAPI support**: Provides `%catcraft_title%` and `%catcraft_suffix%` placeholders
+- ✅ **PlaceholderAPI support**: Provides `%catcraft_title%`, `%catcraft_suffix%` and `%catcraft_balance%` placeholders
 - ✅ **Legacy color codes support**: `&e` format etc.
+- ✅ **Built-in shop & coin system**: Admins can add items (titles/suffixes) to the shop; players purchase with coins; daily sign-in rewards coins
 - ✅ **Startup info banner**: Console displays server version, database status, PAPI status
 
 ---
 ## ⚠️ Notes
 - ⚠️ **PlaceholderAPI is required** as a prerequisite
 - ⚠️ If using PostgreSQL, ensure the server has the driver (already bundled)
+- ⚠️ **When upgrading from 1.2.2 to 1.2.3, please delete `.\plugins\CatCraftTitle\config.yml`** and let the plugin regenerate it, otherwise new feature messages will not appear. Player database is unaffected.
+
 ---
 ## Unified Management of Titles and Suffixes - GUI Interface
 ![guien](https://cdn.modrinth.com/data/cached_images/81b354ecabfd1952b60e249445f25473005830af.png)
@@ -52,6 +56,7 @@ CatCraftTitle is a **lightweight, fully-featured Minecraft title and suffix mana
 
 - ✅ MySQL
 - ✅ PostgreSQL
+- ✅ SQLite (built-in)
 
 ---
 
@@ -60,7 +65,7 @@ CatCraftTitle is a **lightweight, fully-featured Minecraft title and suffix mana
 | Dependency | Required | Description |
 |------------|----------|-------------|
 | PlaceholderAPI | ⚠️ Required | Variable support |
-| MySQL / PostgreSQL | Optional | For cross-server sync |
+| MySQL / PostgreSQL | Optional | For cross-server sync (if not used, SQLite is used automatically) |
 
 ---
 
@@ -69,6 +74,7 @@ CatCraftTitle is a **lightweight, fully-featured Minecraft title and suffix mana
 | Command | Description |
 |---------|-------------|
 | `/title gui` | Open GUI management interface |
+| `/title shop` | Open shop home (title/suffix categories) |
 | `/title list` | List all owned titles and suffixes with status |
 | `/title active <ID>` | Activate a title by ID |
 | `/title deactive` | Deactivate current title, revert to default |
@@ -100,6 +106,19 @@ CatCraftTitle is a **lightweight, fully-featured Minecraft title and suffix mana
 | `/titleadmin suffixsetactive <player> <ID>` | Force activate a suffix for a player |
 | `/titleadmin suffixdeactive <player>` | Deactivate player's current suffix |
 
+### Shop Management (new)
+| Command | Description |
+|---------|-------------|
+| `/titleadmin shop add <ID> <type(0/1)> <price> <display>` | Add an item to title or suffix shop |
+| `/titleadmin shop remove <ID> <type>` | Remove an item from the shop |
+| `/titleadmin shop setprice <ID> <type> <new price>` | Change item price |
+| `/titleadmin shop list` | List all shop items |
+| `/titleadmin shop givebalance <player> <amount>` | Add coins to a player |
+| `/titleadmin shop setbalance <player> <amount>` | Set a player's coins to a specific value |
+| `/titleadmin shop toggle` | Hint to toggle shop via config file |
+
+> `type`: `0` for title, `1` for suffix.
+
 ---
 
 ##  Permissions
@@ -119,10 +138,11 @@ CatCraftTitle is a **lightweight, fully-featured Minecraft title and suffix mana
 |----------|-------------|
 | `%catcraft_title%` | Current active title (colored/RGB) |
 | `%catcraft_suffix%` | Current active suffix (colored/RGB) |
+| `%catcraft_balance%` | Player's current coin balance (integer) |
 
 ---
 
-##  Config File (auto-generated)
+##  Config File (auto-generated, example)
 
 ```yaml
 # Language setting (zh / en)
@@ -154,19 +174,20 @@ settings:
   debug: true
   enable-rgb: false          # Enable RGB gradient
   check-update: true         # Enable update check
-  default-title: "&d[&dNewbie Meow]&7"   # Default fallback title
-  rgb-colors:                # Custom RGB color array
-    - "&x&F&F&0&0&0&0"
-    - "&x&F&F&4&0&F&F"
-    - "&x&8&0&4&0&F&F"
 
-# GUI custom titles
+# Shop system configuration (new)
+shop:
+  enabled: true              # Enable shop (disables all shop features if false)
+  default-balance: 0         # Default coins for new players
+  signin-reward: 30          # Daily sign-in reward amount
+
+# GUI custom titles (existing)
 gui:
   home-title: "§6CatCraft Title Manager · Home"
   title-page: "§6Title Management"
   suffix-page: "§6Suffix Management"
 
-# All messages (bilingual)
+# All messages (bilingual, full key list in actual config)
 messages:
   zh: { ... }
   en: { ... }
@@ -248,6 +269,9 @@ A: Change `language` to `zh` or `en` and restart the server.
 
 **Q: Update check gives SSL error?**  
 A: Please upgrade Java to version 11 or higher; or manually import GitHub SSL certificate.
+
+**Q: After updating, shop messages don't appear?**  
+A: Delete `config.yml` and restart to regenerate the file with the new message keys.
 
 ---
 
