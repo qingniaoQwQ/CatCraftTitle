@@ -7,6 +7,7 @@ public class CatCraftTitlePlugin extends JavaPlugin {
     private static CatCraftTitlePlugin instance;
     private DatabaseManager database;
     private TitleManager manager;
+    private ShopManager shopManager;
 
     public void onEnable() {
         instance = this;
@@ -17,6 +18,10 @@ public class CatCraftTitlePlugin extends JavaPlugin {
         database.connect();
 
         manager = new TitleManager(database);
+
+        boolean shopEnabled = getConfig().getBoolean("shop.enabled", true);
+        int signinReward = getConfig().getInt("shop.signin-reward", 30);
+        shopManager = new ShopManager(database, manager, shopEnabled, signinReward);
 
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(manager), this);
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(manager), this);
@@ -81,4 +86,5 @@ public class CatCraftTitlePlugin extends JavaPlugin {
     public static CatCraftTitlePlugin getInstance() { return instance; }
     public DatabaseManager getDatabase() { return database; }
     public TitleManager getManager() { return manager; }
+    public ShopManager getShopManager() { return shopManager; }
 }

@@ -34,6 +34,15 @@ settings:
   enable-rgb: false
   check-update: true
 
+# 商店系统配置
+shop:
+  # 是否启用商店（关闭后同时禁用金币系统）
+  enabled: true
+  # 玩家初始金币（当首次查询时）
+  default-balance: 0
+  # 每日签到奖励金币
+  signin-reward: 30
+
 messages:
   zh:
     no-permission: "&c你没有权限执行此操作"
@@ -176,6 +185,51 @@ messages:
     player-help-suffixdeactive-line: "§e/title suffixdeactive §7- 停用后缀"
     player-help-remove-line: "§e/title remove §f<ID> §7- 移除称号（不可移除激活的）"
 
+    # 商店相关
+    gui-shop-title: "§6CatCraft称号商店"
+    gui-shop-lore: "§7点击进入商店购买称号"
+    gui-shop-balance-hint: "§7你的当前余额"
+    gui-shop-price: "价格:"
+    gui-shop-owned: "已拥有"
+    gui-shop-click-buy: "点击购买"
+    gui-balance: "§6当前余额: §a"
+    shop-disabled: "§c商店系统已关闭"
+    shop-purchase-success: "§a你成功购买了称号: %s"
+    shop-purchase-fail: "§c购买失败，可能余额不足、已拥有或商店错误"
+    player-help-shop-line: "§e/title shop §7- 打开商店"
+
+    # 商店分类与签到
+    gui-shop-filter-all: "全部"
+    gui-shop-filter-title: "头衔"
+    gui-shop-filter-suffix: "后缀"
+    gui-shop-click-filter: "§7点击选择"
+    gui-shop-id: "ID:"
+    gui-signin-btn: "每日签到"
+    gui-signin-done: "今日已签到"
+    gui-signin-lore: "签到获得 §6%d 金币"
+    gui-signin-already: "今天已经签到了哦"
+    gui-signin-success: "§a签到成功！获得 %d 金币"
+    gui-signin-fail: "§c签到失败，请稍后重试"
+
+    # 管理员商店帮助（新增）
+    admin-help-shop-title: "商店管理"
+    admin-help-shop-add-line: "§e/titleadmin shop add §f<ID> <类型(0/1)> <价格> <显示名> §7- 添加商品"
+    admin-help-shop-remove-line: "§e/titleadmin shop remove §f<ID> <类型> §7- 移除商品"
+    admin-help-shop-setprice-line: "§e/titleadmin shop setprice §f<ID> <类型> <新价格> §7- 修改价格"
+    admin-help-shop-list-line: "§e/titleadmin shop list §7- 列出所有商品"
+    admin-help-shop-givebalance-line: "§e/titleadmin shop givebalance §f<玩家> <金额> §7- 增加玩家金币"
+    admin-help-shop-setbalance-line: "§e/titleadmin shop setbalance §f<玩家> <金额> §7- 设置玩家金币"
+    admin-help-shop-toggle-line: "§e/titleadmin shop toggle §7- 开关商店（需修改配置文件）"
+
+    # 商店首页与列表
+    gui-shop-home-title: "§6CatCraft称号商店"
+    gui-shop-back-home: "§e返回商店首页"
+    gui-shop-back-home-lore: "§7点击返回"
+    gui-shop-title-list-title: "§6头衔商店"
+    gui-shop-title-list-suffix: "§6后缀商店"
+    gui-shop-type: "类型:"
+    gui-shop-list-hint: "§7点击进入查看"
+
   en:
     no-permission: "&cYou do not have permission"
     player-only-command: "&cThis command is for players only"
@@ -315,3 +369,48 @@ messages:
     player-help-remove-line: "§e/title remove §f<ID> §7- Remove title/suffix (cannot remove active)"
 
     gui-home-title: "§6CatCraft Title Manager · Home"
+
+    # Shop related
+    gui-shop-title: "§6CatCraft Title Shop"
+    gui-shop-lore: "§7Click to enter shop"
+    gui-shop-balance-hint: "§7Your balance"
+    gui-shop-price: "Price:"
+    gui-shop-owned: "Owned"
+    gui-shop-click-buy: "Click to buy"
+    gui-balance: "§6Balance: §a"
+    shop-disabled: "§cShop system is disabled"
+    shop-purchase-success: "§aYou purchased title: %s"
+    shop-purchase-fail: "§cPurchase failed, insufficient balance, already owned, or error"
+    player-help-shop-line: "§e/title shop §7- Open shop"
+
+    # Shop filter & signin
+    gui-shop-filter-all: "All"
+    gui-shop-filter-title: "Titles"
+    gui-shop-filter-suffix: "Suffixes"
+    gui-shop-click-filter: "§7Click to select"
+    gui-shop-id: "ID:"
+    gui-signin-btn: "Daily Signin"
+    gui-signin-done: "Signed in today"
+    gui-signin-lore: "Sign in to get §6%d coins"
+    gui-signin-already: "Already signed in today"
+    gui-signin-success: "§aSignin successful! Got %d coins"
+    gui-signin-fail: "§cSignin failed, please try again later"
+
+    # Admin shop help
+    admin-help-shop-title: "Shop Management"
+    admin-help-shop-add-line: "§e/titleadmin shop add §f<ID> <type(0/1)> <price> <display> §7- Add item"
+    admin-help-shop-remove-line: "§e/titleadmin shop remove §f<ID> <type> §7- Remove item"
+    admin-help-shop-setprice-line: "§e/titleadmin shop setprice §f<ID> <type> <new price> §7- Set price"
+    admin-help-shop-list-line: "§e/titleadmin shop list §7- List all items"
+    admin-help-shop-givebalance-line: "§e/titleadmin shop givebalance §f<player> <amount> §7- Add coins"
+    admin-help-shop-setbalance-line: "§e/titleadmin shop setbalance §f<player> <amount> §7- Set coins"
+    admin-help-shop-toggle-line: "§e/titleadmin shop toggle §7- Toggle shop (edit config)"
+
+    # Shop home and list
+    gui-shop-home-title: "§6CatCraft Title Shop"
+    gui-shop-back-home: "§eBack to Shop Home"
+    gui-shop-back-home-lore: "§7Click to return"
+    gui-shop-title-list-title: "§6Title Shop"
+    gui-shop-title-list-suffix: "§6Suffix Shop"
+    gui-shop-type: "Type:"
+    gui-shop-list-hint: "§7Click to browse"

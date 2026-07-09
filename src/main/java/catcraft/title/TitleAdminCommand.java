@@ -30,6 +30,20 @@ public class TitleAdminCommand implements CommandExecutor, TabCompleter {
         if (sub.equals("suffixlist")) return handleList(sender, args, 1);
         if (sub.equals("suffixsetactive")) return handleSetActive(sender, args, 1);
         if (sub.equals("suffixdeactive")) return handleDeactive(sender, args, 1);
+        if (sub.equals("shop")) {
+            if (args.length < 2) { sendShopHelp(sender); return true; }
+            String shopSub = args[1].toLowerCase();
+            switch (shopSub) {
+                case "add": return handleShopAdd(sender, args);
+                case "remove": return handleShopRemove(sender, args);
+                case "setprice": return handleShopSetPrice(sender, args);
+                case "list": return handleShopList(sender, args);
+                case "givebalance": return handleShopGiveBalance(sender, args);
+                case "setbalance": return handleShopSetBalance(sender, args);
+                case "toggle": return handleShopToggle(sender, args);
+                default: sendShopHelp(sender); return true;
+            }
+        }
         sendHelp(sender);
         return true;
     }
@@ -134,7 +148,150 @@ public class TitleAdminCommand implements CommandExecutor, TabCompleter {
         return true;
     }
 
-    // 使用新的全行键
+
+    private boolean handleShopAdd(CommandSender sender, String[] args) {
+        if (args.length < 6) {
+            sender.sendMessage(ColorUtil.color("§c用法: /titleadmin shop add <ID> <类型(0头衔/1后缀)> <价格> <显示名>"));
+            return true;
+        }
+        int id, type, price;
+        try {
+            id = Integer.parseInt(args[2]);
+            type = Integer.parseInt(args[3]);
+            price = Integer.parseInt(args[4]);
+        } catch (NumberFormatException e) {
+            sender.sendMessage(ColorUtil.color("§cID、类型和价格必须是数字"));
+            return true;
+        }
+        String display = String.join(" ", Arrays.copyOfRange(args, 5, args.length));
+
+
+        if (CatCraftTitlePlugin.getInstance().getDatabase().isTitleIdUsedByAnyPlayer(id)) {
+            sender.sendMessage(ColorUtil.color("§c该ID已被某玩家拥有，请使用其他ID"));
+            return true;
+        }
+
+        if (CatCraftTitlePlugin.getInstance().getShopManager().addShopItem(id, type, display, price)) {
+            sender.sendMessage(ColorUtil.color("§a商品添加成功！"));
+        } else {
+            sender.sendMessage(ColorUtil.color("§c添加失败，可能ID已存在或商店未启用"));
+        }
+        return true;
+    }
+
+    private boolean handleShopRemove(CommandSender sender, String[] args) {
+        if (args.length < 4) {
+            sender.sendMessage(ColorUtil.color("§c用法: /titleadmin shop remove <ID> <类型>"));
+            return true;
+        }
+        int id, type;
+        try {
+            id = Integer.parseInt(args[2]);
+            type = Integer.parseInt(args[3]);
+        } catch (NumberFormatException e) {
+            sender.sendMessage(ColorUtil.color("§cID和类型必须是数字"));
+            return true;
+        }
+        if (CatCraftTitlePlugin.getInstance().getShopManager().removeShopItem(id, type)) {
+            sender.sendMessage(ColorUtil.color("§a商品移除成功"));
+        } else {
+            sender.sendMessage(ColorUtil.color("§c移除失败"));
+        }
+        return true;
+    }
+
+    private boolean handleShopSetPrice(CommandSender sender, String[] args) {
+        if (args.length < 5) {
+            sender.sendMessage(ColorUtil.color("§c用法: /titleadmin shop setprice <ID> <类型> <新价格>"));
+            return true;
+        }
+        int id, type, price;
+        try {
+            id = Integer.parseInt(args[2]);
+            type = Integer.parseInt(args[3]);
+            price = Integer.parseInt(args[4]);
+        } catch (NumberFormatException e) {
+            sender.sendMessage(ColorUtil.color("§cID、类型和价格必须是数字"));
+            return true;
+        }
+        if (CatCraftTitlePlugin.getInstance().getShopManager().setShopItemPrice(id, type, price)) {
+            sender.sendMessage(ColorUtil.color("§a价格更新成功"));
+        } else {
+            sender.sendMessage(ColorUtil.color("§c更新失败"));
+        }
+        return true;
+    }
+
+    private boolean handleShopList(CommandSender sender, String[] args) {
+        List<ShopItem> items = CatCraftTitlePlugin.getInstance().getShopManager().getShopItems();
+        if (items.isEmpty()) {
+            sender.sendMessage(ColorUtil.color("§e商店暂无商品"));
+            return true;
+        }
+        sender.sendMessage(ColorUtil.color("§6===== 商店商品列表 ====="));
+        for (ShopItem item : items) {
+            String typeStr = (item.getType() == 0) ? "头衔" : "后缀";
+            sender.sendMessage(ColorUtil.color("§fID:" + item.getId() + " §7" + typeStr + " §a" + item.getDisplay() + " §6价格:" + item.getPrice()));
+        }
+        return true;
+    }
+
+    private boolean handleShopGiveBalance(CommandSender sender, String[] args) {
+        if (args.length < 4) {
+            sender.sendMessage(ColorUtil.color("§c用法: /titleadmin shop givebalance <玩家> <金额>"));
+            return true;
+        }
+        Player target = Bukkit.getPlayer(args[2]);
+        if (target == null) {
+            sender.sendMessage(ColorUtil.color(MessageManager.get("player-offline")));
+            return true;
+        }
+        int amount;
+        try {
+            amount = Integer.parseInt(args[3]);
+        } catch (NumberFormatException e) {
+            sender.sendMessage(ColorUtil.color("§c金额必须是数字"));
+            return true;
+        }
+        if (CatCraftTitlePlugin.getInstance().getShopManager().addBalance(target.getUniqueId(), amount)) {
+            sender.sendMessage(ColorUtil.color("§a已为 " + target.getName() + " 增加 " + amount + " 金币"));
+        } else {
+            sender.sendMessage(ColorUtil.color("§c操作失败"));
+        }
+        return true;
+    }
+
+    private boolean handleShopSetBalance(CommandSender sender, String[] args) {
+        if (args.length < 4) {
+            sender.sendMessage(ColorUtil.color("§c用法: /titleadmin shop setbalance <玩家> <金额>"));
+            return true;
+        }
+        Player target = Bukkit.getPlayer(args[2]);
+        if (target == null) {
+            sender.sendMessage(ColorUtil.color(MessageManager.get("player-offline")));
+            return true;
+        }
+        int amount;
+        try {
+            amount = Integer.parseInt(args[3]);
+        } catch (NumberFormatException e) {
+            sender.sendMessage(ColorUtil.color("§c金额必须是数字"));
+            return true;
+        }
+        if (amount < 0) { sender.sendMessage(ColorUtil.color("§c金额不能为负数")); return true; }
+        if (CatCraftTitlePlugin.getInstance().getShopManager().setBalance(target.getUniqueId(), amount)) {
+            sender.sendMessage(ColorUtil.color("§a已将 " + target.getName() + " 余额设为 " + amount));
+        } else {
+            sender.sendMessage(ColorUtil.color("§c操作失败"));
+        }
+        return true;
+    }
+
+    private boolean handleShopToggle(CommandSender sender, String[] args) {
+        sender.sendMessage(ColorUtil.color("§e请编辑 config.yml 中的 shop.enabled 并执行 /catcraft reload（或重载插件）"));
+        return true;
+    }
+
     private void sendHelp(CommandSender sender) {
         sender.sendMessage(ColorUtil.color(PREFIX + "§6===== " + MessageManager.get("admin-help-title") + " ====="));
         sender.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("admin-help-give-line")));
@@ -149,20 +306,50 @@ public class TitleAdminCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("admin-help-suffixlist-line")));
         sender.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("admin-help-suffixsetactive-line")));
         sender.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("admin-help-suffixdeactive-line")));
+        sender.sendMessage(ColorUtil.color(PREFIX + "§6--- " + MessageManager.get("admin-help-shop-title") + " ---"));
+        sender.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("admin-help-shop-add-line")));
+        sender.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("admin-help-shop-remove-line")));
+        sender.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("admin-help-shop-setprice-line")));
+        sender.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("admin-help-shop-list-line")));
+        sender.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("admin-help-shop-givebalance-line")));
+        sender.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("admin-help-shop-setbalance-line")));
+        sender.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("admin-help-shop-toggle-line")));
+    }
+
+    private void sendShopHelp(CommandSender sender) {
+        sender.sendMessage(ColorUtil.color(PREFIX + "§6===== " + MessageManager.get("admin-help-shop-title") + " ====="));
+        sender.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("admin-help-shop-add-line")));
+        sender.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("admin-help-shop-remove-line")));
+        sender.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("admin-help-shop-setprice-line")));
+        sender.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("admin-help-shop-list-line")));
+        sender.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("admin-help-shop-givebalance-line")));
+        sender.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("admin-help-shop-setbalance-line")));
+        sender.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("admin-help-shop-toggle-line")));
     }
 
     public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args) {
         List<String> completions = new ArrayList<>();
         if (args.length == 1) {
-            completions.addAll(Arrays.asList("give","edit","take","list","setactive","deactive","suffixgive","suffixedit","suffixtake","suffixlist","suffixsetactive","suffixdeactive"));
+            completions.addAll(Arrays.asList("give","edit","take","list","setactive","deactive","suffixgive","suffixedit","suffixtake","suffixlist","suffixsetactive","suffixdeactive","shop"));
         } else if (args.length == 2) {
             String sub = args[0].toLowerCase();
-            if (sub.startsWith("suffix") || sub.equals("give") || sub.equals("edit") || sub.equals("take") || sub.equals("list") || sub.equals("setactive") || sub.equals("deactive")) {
+            if (sub.equals("shop")) {
+                completions.addAll(Arrays.asList("add","remove","setprice","list","givebalance","setbalance","toggle"));
+            } else if (sub.startsWith("suffix") || sub.equals("give") || sub.equals("edit") || sub.equals("take") || sub.equals("list") || sub.equals("setactive") || sub.equals("deactive")) {
                 for (Player p : Bukkit.getOnlinePlayers()) completions.add(p.getName());
             }
         } else if (args.length == 3) {
             String sub = args[0].toLowerCase();
-            if (sub.equals("give") || sub.equals("edit") || sub.equals("take") || sub.equals("setactive") ||
+            if (sub.equals("shop")) {
+                String shopSub = args[1].toLowerCase();
+                if (shopSub.equals("remove") || shopSub.equals("setprice")) {
+                    for (ShopItem item : CatCraftTitlePlugin.getInstance().getShopManager().getShopItems()) {
+                        completions.add(String.valueOf(item.getId()));
+                    }
+                } else if (shopSub.equals("givebalance") || shopSub.equals("setbalance")) {
+                    for (Player p : Bukkit.getOnlinePlayers()) completions.add(p.getName());
+                }
+            } else if (sub.equals("give") || sub.equals("edit") || sub.equals("take") || sub.equals("setactive") ||
                     sub.equals("suffixgive") || sub.equals("suffixedit") || sub.equals("suffixtake") || sub.equals("suffixsetactive")) {
                 Player target = Bukkit.getPlayer(args[1]);
                 if (target != null) {
@@ -170,6 +357,11 @@ public class TitleAdminCommand implements CommandExecutor, TabCompleter {
                     Map<Integer, String> map = isSuffix ? manager.getOwnedSuffixes(target) : manager.getOwnedTitles(target);
                     for (Integer id : map.keySet()) completions.add(id.toString());
                 }
+            }
+        } else if (args.length == 4) {
+            String sub = args[0].toLowerCase();
+            if (sub.equals("shop") && args[1].equalsIgnoreCase("remove")) {
+                completions.addAll(Arrays.asList("0","1"));
             }
         }
         return completions;

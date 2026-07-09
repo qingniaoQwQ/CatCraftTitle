@@ -38,11 +38,12 @@ public class CatCraftExpansion extends PlaceholderExpansion {
         if (params.equals("title")) {
             return manager.getTitle(player);
         }
-
         if (params.equals("suffix")) {
             return manager.getSuffix(player);
         }
-
+        if (params.equals("balance")) {
+            return String.valueOf(CatCraftTitlePlugin.getInstance().getShopManager().getBalance(player.getUniqueId()));
+        }
         return null;
     }
 }

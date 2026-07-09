@@ -48,6 +48,8 @@ public class DatabaseManager {
                 plugin.getLogger().info("SQLite连接成功，文件: " + dbFile.getName());
             }
             createTables();
+            createShopTables();
+            createSigninTable();
             connected = true;
         } catch (Exception e) {
             plugin.getLogger().severe("数据库连接失败！");
@@ -68,6 +70,39 @@ public class DatabaseManager {
             stmt.execute(sql);
         } catch (SQLException e) {
             plugin.getLogger().severe("创建表失败！");
+            e.printStackTrace();
+        }
+    }
+
+    private void createShopTables() {
+        try (Statement stmt = conn.createStatement()) {
+            String sqlItems = "CREATE TABLE IF NOT EXISTS shop_items (" +
+                    "id INT PRIMARY KEY, " +
+                    "type INT NOT NULL, " +
+                    "display VARCHAR(128) NOT NULL, " +
+                    "price INT NOT NULL)";
+            stmt.execute(sqlItems);
+
+            String sqlBal = "CREATE TABLE IF NOT EXISTS player_balances (" +
+                    "uuid VARCHAR(36) PRIMARY KEY, " +
+                    "balance INT NOT NULL DEFAULT 0)";
+            stmt.execute(sqlBal);
+            plugin.getLogger().info("商店表创建/检查完成。");
+        } catch (SQLException e) {
+            plugin.getLogger().severe("创建商店表失败！");
+            e.printStackTrace();
+        }
+    }
+
+    private void createSigninTable() {
+        try (Statement stmt = conn.createStatement()) {
+            String sql = "CREATE TABLE IF NOT EXISTS player_signin (" +
+                    "uuid VARCHAR(36) PRIMARY KEY, " +
+                    "last_signin BIGINT NOT NULL DEFAULT 0)";
+            stmt.execute(sql);
+            plugin.getLogger().info("签到表创建/检查完成。");
+        } catch (SQLException e) {
+            plugin.getLogger().severe("创建签到表失败！");
             e.printStackTrace();
         }
     }
@@ -184,6 +219,173 @@ public class DatabaseManager {
             ps.executeUpdate();
             return true;
         } catch (Exception e) { e.printStackTrace(); return false; }
+    }
+
+    public boolean addShopItem(int id, int type, String display, int price) {
+        if (conn == null) return false;
+        String sql = "INSERT INTO shop_items (id, type, display, price) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ps.setInt(2, type);
+            ps.setString(3, display);
+            ps.setInt(4, price);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) { e.printStackTrace(); return false; }
+    }
+
+    public boolean removeShopItem(int id, int type) {
+        if (conn == null) return false;
+        String sql = "DELETE FROM shop_items WHERE id = ? AND type = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ps.setInt(2, type);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) { e.printStackTrace(); return false; }
+    }
+
+    public boolean updateShopItemPrice(int id, int type, int newPrice) {
+        if (conn == null) return false;
+        String sql = "UPDATE shop_items SET price = ? WHERE id = ? AND type = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, newPrice);
+            ps.setInt(2, id);
+            ps.setInt(3, type);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) { e.printStackTrace(); return false; }
+    }
+
+    public ShopItem getShopItem(int id, int type) {
+        if (conn == null) return null;
+        String sql = "SELECT id, type, display, price FROM shop_items WHERE id = ? AND type = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ps.setInt(2, type);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new ShopItem(rs.getInt("id"), rs.getInt("type"),
+                            rs.getString("display"), rs.getInt("price"));
+                }
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return null;
+    }
+
+    public List<ShopItem> getShopItems() {
+        List<ShopItem> list = new ArrayList<>();
+        if (conn == null) return list;
+        String sql = "SELECT id, type, display, price FROM shop_items ORDER BY id";
+        try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                list.add(new ShopItem(rs.getInt("id"), rs.getInt("type"),
+                        rs.getString("display"), rs.getInt("price")));
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return list;
+    }
+
+    public List<ShopItem> getShopItemsByType(int type) {
+        List<ShopItem> list = new ArrayList<>();
+        if (conn == null) return list;
+        String sql = "SELECT id, type, display, price FROM shop_items WHERE type = ? ORDER BY id";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, type);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(new ShopItem(rs.getInt("id"), rs.getInt("type"),
+                            rs.getString("display"), rs.getInt("price")));
+                }
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return list;
+    }
+
+    public int getBalance(UUID uuid) {
+        if (conn == null) return 0;
+        String sql = "SELECT balance FROM player_balances WHERE uuid = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getInt("balance");
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        setBalance(uuid, 0);
+        return 0;
+    }
+
+    public boolean setBalance(UUID uuid, int amount) {
+        if (conn == null) return false;
+        String sql;
+        if (dbType.equals("sqlite")) {
+            sql = "INSERT OR REPLACE INTO player_balances (uuid, balance) VALUES (?, ?)";
+        } else if (dbType.equals("postgresql")) {
+            sql = "INSERT INTO player_balances (uuid, balance) VALUES (?, ?) ON CONFLICT (uuid) DO UPDATE SET balance = EXCLUDED.balance";
+        } else {
+            sql = "INSERT INTO player_balances (uuid, balance) VALUES (?, ?) ON DUPLICATE KEY UPDATE balance = VALUES(balance)";
+        }
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            ps.setInt(2, amount);
+            ps.executeUpdate();
+            return true;
+        } catch (Exception e) { e.printStackTrace(); return false; }
+    }
+
+    public boolean addBalance(UUID uuid, int delta) {
+        if (conn == null) return false;
+        String sql = "UPDATE player_balances SET balance = balance + ? WHERE uuid = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, delta);
+            ps.setString(2, uuid.toString());
+            int affected = ps.executeUpdate();
+            if (affected == 0) {
+                setBalance(uuid, Math.max(0, delta));
+            }
+            return true;
+        } catch (Exception e) { e.printStackTrace(); return false; }
+    }
+
+    public long getLastSignin(UUID uuid) {
+        if (conn == null) return 0;
+        String sql = "SELECT last_signin FROM player_signin WHERE uuid = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getLong("last_signin");
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return 0;
+    }
+
+    public boolean setLastSignin(UUID uuid, long time) {
+        if (conn == null) return false;
+        String sql;
+        if (dbType.equals("sqlite")) {
+            sql = "INSERT OR REPLACE INTO player_signin (uuid, last_signin) VALUES (?, ?)";
+        } else if (dbType.equals("postgresql")) {
+            sql = "INSERT INTO player_signin (uuid, last_signin) VALUES (?, ?) ON CONFLICT (uuid) DO UPDATE SET last_signin = EXCLUDED.last_signin";
+        } else {
+            sql = "INSERT INTO player_signin (uuid, last_signin) VALUES (?, ?) ON DUPLICATE KEY UPDATE last_signin = VALUES(last_signin)";
+        }
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, uuid.toString());
+            ps.setLong(2, time);
+            ps.executeUpdate();
+            return true;
+        } catch (Exception e) { e.printStackTrace(); return false; }
+    }
+
+    public boolean isTitleIdUsedByAnyPlayer(int id) {
+        if (conn == null) return false;
+        String sql = "SELECT 1 FROM player_titles WHERE title_id = ? LIMIT 1";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public void disconnect() {

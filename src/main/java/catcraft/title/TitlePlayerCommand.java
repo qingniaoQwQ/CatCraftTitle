@@ -20,6 +20,7 @@ public class TitlePlayerCommand implements CommandExecutor, TabCompleter {
         String sub = args[0].toLowerCase();
         switch (sub) {
             case "gui": TitleGUI.openHome(p); break;
+            case "shop": TitleGUI.openShopHome(p); break;
             case "list": {
                 Map<Integer, String> titles = manager.getOwnedTitles(p);
                 Map<Integer, String> suffixes = manager.getOwnedSuffixes(p);
@@ -89,7 +90,6 @@ public class TitlePlayerCommand implements CommandExecutor, TabCompleter {
         return true;
     }
 
-    // 使用新的全行键
     private void sendHelp(Player p) {
         p.sendMessage(ColorUtil.color(PREFIX + "§6===== " + MessageManager.get("player-help-title") + " ====="));
         p.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("player-help-gui-line")));
@@ -99,12 +99,13 @@ public class TitlePlayerCommand implements CommandExecutor, TabCompleter {
         p.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("player-help-suffixactive-line")));
         p.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("player-help-suffixdeactive-line")));
         p.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("player-help-remove-line")));
+        p.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("player-help-shop-line")));
     }
 
     public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args) {
         List<String> completions = new ArrayList<>();
         if (args.length == 1) {
-            completions.addAll(Arrays.asList("gui","list","active","deactive","suffixactive","suffixdeactive","remove"));
+            completions.addAll(Arrays.asList("gui","shop","list","active","deactive","suffixactive","suffixdeactive","remove"));
         } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("active") || args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("suffixactive")) {
                 Player p = (Player) sender;

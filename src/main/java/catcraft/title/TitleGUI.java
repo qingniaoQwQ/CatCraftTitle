@@ -15,20 +15,43 @@ public class TitleGUI {
 
     private static final int PER_PAGE = 36;
 
-    public enum PageType { HOME, TITLE, SUFFIX }
+    public enum PageType { HOME, TITLE, SUFFIX, SHOP_HOME, SHOP_LIST }
+
+    public static class GUIHolder implements InventoryHolder {
+        private final UUID playerUUID;
+        private final PageType type;
+        private final int page;
+        private final int filter;
+
+        public GUIHolder(UUID uuid, PageType type, int page) {
+            this(uuid, type, page, -1);
+        }
+
+        public GUIHolder(UUID uuid, PageType type, int page, int filter) {
+            this.playerUUID = uuid;
+            this.type = type;
+            this.page = page;
+            this.filter = filter;
+        }
+
+        public UUID getPlayerUUID() { return playerUUID; }
+        public PageType getType() { return type; }
+        public int getPage() { return page; }
+        public int getFilter() { return filter; }
+
+        @Override
+        public Inventory getInventory() { return null; }
+    }
 
     public static void openHome(Player player) {
         Inventory inv = Bukkit.createInventory(new GUIHolder(player.getUniqueId(), PageType.HOME, 0), 54, MessageManager.get("gui-home-title"));
-
 
         ItemStack head = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta meta = (SkullMeta) head.getItemMeta();
         meta.setOwningPlayer(player);
         meta.setDisplayName("§a" + player.getName());
-
         head.setItemMeta(meta);
         inv.setItem(4, head);
-
 
         ItemStack titleBtn = createItem(Material.BOOK,
                 MessageManager.get("gui-title-btn"),
@@ -39,6 +62,16 @@ public class TitleGUI {
                 MessageManager.get("gui-suffix-btn"),
                 Arrays.asList(MessageManager.get("gui-suffix-lore1"), MessageManager.get("gui-suffix-lore2") + getActiveSuffixDisplay(player)));
         inv.setItem(24, suffixBtn);
+
+        ShopManager shop = CatCraftTitlePlugin.getInstance().getShopManager();
+        if (shop.isEnabled()) {
+            ItemStack shopBtn = createItem(Material.GOLD_INGOT,
+                    "§6" + MessageManager.get("gui-shop-title"),
+                    Arrays.asList("§7" + MessageManager.get("gui-shop-lore"), "§7" + MessageManager.get("gui-balance") + shop.getBalance(player.getUniqueId())));
+            inv.setItem(22, shopBtn);
+        } else {
+            inv.setItem(22, createEmptyGlass());
+        }
 
         inv.setItem(53, createItem(Material.RED_STAINED_GLASS_PANE,
                 MessageManager.get("gui-close"),
@@ -151,6 +184,121 @@ public class TitleGUI {
         player.openInventory(inv);
     }
 
+    public static void openShopHome(Player player) {
+        ShopManager shop = CatCraftTitlePlugin.getInstance().getShopManager();
+        if (!shop.isEnabled()) {
+            player.sendMessage(ColorUtil.color(MessageManager.get("shop-disabled")));
+            return;
+        }
+
+        Inventory inv = Bukkit.createInventory(new GUIHolder(player.getUniqueId(), PageType.SHOP_HOME, 0), 54,
+                MessageManager.get("gui-shop-home-title"));
+
+        inv.setItem(0, createItem(Material.ARROW,
+                MessageManager.get("gui-back-home"),
+                Collections.singletonList(MessageManager.get("gui-back-home-lore"))));
+
+        inv.setItem(4, createItem(Material.SUNFLOWER,
+                MessageManager.get("gui-balance") + shop.getBalance(player.getUniqueId()),
+                Collections.singletonList("§7" + MessageManager.get("gui-shop-balance-hint"))));
+
+        inv.setItem(20, createItem(Material.BOOK,
+                "§6" + MessageManager.get("gui-shop-filter-title"),
+                Arrays.asList("§7" + MessageManager.get("gui-shop-click-filter"), "§7" + MessageManager.get("gui-shop-list-hint"))));
+
+        inv.setItem(24, createItem(Material.FEATHER,
+                "§6" + MessageManager.get("gui-shop-filter-suffix"),
+                Arrays.asList("§7" + MessageManager.get("gui-shop-click-filter"), "§7" + MessageManager.get("gui-shop-list-hint"))));
+
+        boolean canSign = shop.canSignin(player.getUniqueId());
+        inv.setItem(22, createItem(canSign ? Material.EMERALD : Material.RED_STAINED_GLASS_PANE,
+                canSign ? "§a" + MessageManager.get("gui-signin-btn") : "§c" + MessageManager.get("gui-signin-done"),
+                canSign ? Collections.singletonList("§7" + MessageManager.get("gui-signin-lore", shop.getSigninReward())) :
+                        Collections.singletonList("§7" + MessageManager.get("gui-signin-already"))));
+
+        for (int i = 0; i < 54; i++) {
+            if (inv.getItem(i) == null) {
+                inv.setItem(i, createEmptyGlass());
+            }
+        }
+
+        player.openInventory(inv);
+    }
+
+    public static void openShopListPage(Player player, int page, int filter) {
+        ShopManager shop = CatCraftTitlePlugin.getInstance().getShopManager();
+        if (!shop.isEnabled()) {
+            player.sendMessage(ColorUtil.color(MessageManager.get("shop-disabled")));
+            return;
+        }
+
+        List<ShopItem> allItems = shop.getShopItemsByType(filter);
+        int total = allItems.size();
+        int maxPage = (total == 0) ? 1 : (int) Math.ceil((double) total / PER_PAGE);
+        if (page < 0) page = 0;
+        if (page >= maxPage) page = maxPage - 1;
+
+        int start = page * PER_PAGE;
+        int end = Math.min(start + PER_PAGE, total);
+        List<ShopItem> sub = allItems.subList(start, end);
+
+        String title = (filter == 0) ? MessageManager.get("gui-shop-title-list-title") : MessageManager.get("gui-shop-title-list-suffix");
+        Inventory inv = Bukkit.createInventory(new GUIHolder(player.getUniqueId(), PageType.SHOP_LIST, page, filter),
+                54, title + " (" + (page+1) + "/" + maxPage + ")");
+
+        inv.setItem(0, createItem(Material.ARROW,
+                MessageManager.get("gui-shop-back-home"),
+                Collections.singletonList(MessageManager.get("gui-shop-back-home-lore"))));
+
+        inv.setItem(4, createItem(Material.SUNFLOWER,
+                MessageManager.get("gui-balance") + shop.getBalance(player.getUniqueId()),
+                Collections.singletonList("§7" + MessageManager.get("gui-shop-balance-hint"))));
+
+        TitleManager mgr = CatCraftTitlePlugin.getInstance().getManager();
+        for (int i = 0; i < sub.size(); i++) {
+            int slot = 9 + i;
+            ShopItem item = sub.get(i);
+            int id = item.getId();
+            int type = item.getType();
+            String display = item.getDisplay();
+            int price = item.getPrice();
+
+            boolean owned = (type == 0) ?
+                    mgr.getOwnedTitles(player).containsKey(id) :
+                    mgr.getOwnedSuffixes(player).containsKey(id);
+
+            String typeStr = (type == 0) ? MessageManager.get("title") : MessageManager.get("suffix");
+            List<String> lore = new ArrayList<>();
+            lore.add("§7" + MessageManager.get("gui-shop-type") + " §f" + typeStr);
+            lore.add("§7" + MessageManager.get("gui-shop-id") + " §f" + id);
+            lore.add("§7" + MessageManager.get("gui-shop-price") + " §6" + price);
+            lore.add(owned ? "§a" + MessageManager.get("gui-shop-owned") : "§e" + MessageManager.get("gui-shop-click-buy"));
+
+            Material mat = owned ? Material.LIME_DYE : Material.PAPER;
+            inv.setItem(slot, createItem(mat, ColorUtil.color(display), lore));
+        }
+
+        for (int i = 9 + sub.size(); i < 45; i++) {
+            inv.setItem(i, createEmptyGlass());
+        }
+
+        if (page > 0) inv.setItem(45, createItem(Material.ARROW,
+                MessageManager.get("gui-previous"), null));
+        else inv.setItem(45, createEmptyGlass());
+
+        inv.setItem(49, createItem(Material.PAPER,
+                "§e" + (page+1) + "/" + maxPage, null));
+
+        if (page < maxPage - 1) inv.setItem(53, createItem(Material.ARROW,
+                MessageManager.get("gui-next"), null));
+        else inv.setItem(53, createEmptyGlass());
+
+        for (int i = 46; i <= 48; i++) inv.setItem(i, createEmptyGlass());
+        for (int i = 50; i <= 52; i++) inv.setItem(i, createEmptyGlass());
+
+        player.openInventory(inv);
+    }
+
     private static ItemStack createItem(Material material, String name, List<String> lore) {
         ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
@@ -162,24 +310,5 @@ public class TitleGUI {
 
     private static ItemStack createEmptyGlass() {
         return createItem(Material.GRAY_STAINED_GLASS_PANE, " ", null);
-    }
-
-    public static class GUIHolder implements InventoryHolder {
-        private final UUID playerUUID;
-        private final PageType type;
-        private final int page;
-
-        public GUIHolder(UUID uuid, PageType type, int page) {
-            this.playerUUID = uuid;
-            this.type = type;
-            this.page = page;
-        }
-
-        public UUID getPlayerUUID() { return playerUUID; }
-        public PageType getType() { return type; }
-        public int getPage() { return page; }
-
-        @Override
-        public Inventory getInventory() { return null; }
     }
 }
