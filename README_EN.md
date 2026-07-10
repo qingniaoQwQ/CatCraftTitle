@@ -15,7 +15,7 @@ CatCraftTitle is a **lightweight, fully-featured Minecraft title and suffix mana
 
 - ✅ **Multi-title system**: Each player can own multiple titles, managed by unique IDs, freely switchable
 - ✅ **Independent suffix system**: Titles and suffixes are separated; players can enable/disable each suffix individually
-- ✅ **Graphical GUI**: Players can use `/title gui` to manage all titles intuitively
+- ✅ **Graphical GUI**: Players can use `/catcraft gui` to manage all titles intuitively
 - ✅ **Cross-server sync**: Supports MySQL / PostgreSQL for shared data across multiple servers
 - ✅ **Automatic failover**: Falls back to SQLite if MySQL/PostgreSQL fails, no data loss
 - ✅ **No restart required**: Admins can edit title display names on the fly
@@ -73,14 +73,14 @@ CatCraftTitle is a **lightweight, fully-featured Minecraft title and suffix mana
 
 | Command | Description |
 |---------|-------------|
-| `/title gui` | Open GUI management interface |
-| `/title shop` | Open shop home (title/suffix categories) |
-| `/title list` | List all owned titles and suffixes with status |
-| `/title active <ID>` | Activate a title by ID |
-| `/title deactive` | Deactivate current title, revert to default |
-| `/title suffixactive <ID>` | Activate a suffix by ID |
-| `/title suffixdeactive` | Deactivate current suffix |
-| `/title remove <ID>` | Remove a title or suffix (cannot remove active one) |
+| `/catcraft gui` | Open GUI management interface |
+| `/catcraft shop` | Open shop home (title/suffix categories) |
+| `/catcraft list` | List all owned titles and suffixes with status |
+| `/catcraft active <ID>` | Activate a title by ID |
+| `/catcraft deactive` | Deactivate current title, revert to default |
+| `/catcraft suffixactive <ID>` | Activate a suffix by ID |
+| `/catcraft suffixdeactive` | Deactivate current suffix |
+| `/catcraft remove <ID>` | Remove a title or suffix (cannot remove active one) |
 
 ---
 
