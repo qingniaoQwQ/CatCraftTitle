@@ -35,9 +35,11 @@ public class CatCraftTitlePlugin extends JavaPlugin {
             getLogger().warning("PlaceholderAPI 未启用，跳过占位符扩展注册。");
         }
 
+
         TitlePlayerCommand playerCmd = new TitlePlayerCommand(manager);
-        getCommand("title").setExecutor(playerCmd);
-        getCommand("title").setTabCompleter(playerCmd);
+        getCommand("catcraft").setExecutor(playerCmd);
+        getCommand("catcraft").setTabCompleter(playerCmd);
+
 
         TitleAdminCommand adminCmd = new TitleAdminCommand(manager);
         getCommand("titleadmin").setExecutor(adminCmd);

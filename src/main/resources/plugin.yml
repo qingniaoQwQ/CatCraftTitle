@@ -14,9 +14,9 @@ permissions:
     description: 玩家基础权限
     default: true
 commands:
-  title:
+  catcraft:
     description: CatCraft玩家头衔管理
-    usage: /title help
+    usage: /catcraft help
   titleadmin:
     description: CatCraft管理员头衔管理
     permission: catcraft.admin
