@@ -209,47 +209,6 @@ messages:
 
 ---
 
-##  Quick Start
-
-###  Admin
-
-```bash
-# Add a title
-/titleadmin give QingNiao 1 &6[VIP]
-
-# Edit title
-/titleadmin edit QingNiao 1 &6[Super VIP]
-
-# Add a suffix
-/titleadmin suffixgive QingNiao 100 &7★
-
-# Activate suffix
-/titleadmin suffixsetactive QingNiao 100
-
-# List all titles/suffixes of a player
-/titleadmin list QingNiao
-```
-
----
-
-###  Player
-
-```bash
-# Open GUI
-/title gui
-
-# List all titles/suffixes
-/title list
-
-# Activate title ID 1
-/title active 1
-
-# Activate suffix ID 100
-/title suffixactive 100
-
-# Deactivate suffix
-/title suffixdeactive
-```
 
 ---
 
