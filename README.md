@@ -278,22 +278,22 @@ CREATE TABLE player_signin (
 
 ```bash
 # 打开GUI
-/title gui
+/catcraft gui
 
 # 打开商店首页
-/title shop
+/catcraft shop
 
 # 查看所有称号
-/title list
+/catcraft list
 
 # 激活头衔ID 1
-/title active 1
+/catcraft active 1
 
 # 激活后缀ID 100
-/title suffixactive 100
+/catcraft suffixactive 100
 
 # 停用后缀
-/title suffixdeactive
+/catcraft suffixdeactive
 
 # 签到（在商店GUI中点击签到按钮）
 ```
