@@ -18,6 +18,16 @@ public class TitleAdminCommand implements CommandExecutor, TabCompleter {
             return true;
         }
         String sub = args[0].toLowerCase();
+
+        if (sub.equals("panel")) {
+            if (sender instanceof Player) {
+                AdminGUI.open((Player) sender);
+            } else {
+                sender.sendMessage(ColorUtil.color("§c该命令仅限玩家执行"));
+            }
+            return true;
+        }
+
         if (sub.equals("give")) return handleGive(sender, args, 0);
         if (sub.equals("edit")) return handleEdit(sender, args, 0);
         if (sub.equals("take")) return handleTake(sender, args, 0);
@@ -148,7 +158,6 @@ public class TitleAdminCommand implements CommandExecutor, TabCompleter {
         return true;
     }
 
-
     private boolean handleShopAdd(CommandSender sender, String[] args) {
         if (args.length < 6) {
             sender.sendMessage(ColorUtil.color("§c用法: /titleadmin shop add <ID> <类型(0头衔/1后缀)> <价格> <显示名>"));
@@ -164,7 +173,6 @@ public class TitleAdminCommand implements CommandExecutor, TabCompleter {
             return true;
         }
         String display = String.join(" ", Arrays.copyOfRange(args, 5, args.length));
-
 
         if (CatCraftTitlePlugin.getInstance().getDatabase().isTitleIdUsedByAnyPlayer(id)) {
             sender.sendMessage(ColorUtil.color("§c该ID已被某玩家拥有，请使用其他ID"));
@@ -314,6 +322,7 @@ public class TitleAdminCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("admin-help-shop-givebalance-line")));
         sender.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("admin-help-shop-setbalance-line")));
         sender.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("admin-help-shop-toggle-line")));
+        sender.sendMessage(ColorUtil.color(PREFIX + "§e/titleadmin panel §7- 打开管理员控制面板"));
     }
 
     private void sendShopHelp(CommandSender sender) {
@@ -327,10 +336,13 @@ public class TitleAdminCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(ColorUtil.color(PREFIX + MessageManager.get("admin-help-shop-toggle-line")));
     }
 
+
     public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args) {
         List<String> completions = new ArrayList<>();
         if (args.length == 1) {
-            completions.addAll(Arrays.asList("give","edit","take","list","setactive","deactive","suffixgive","suffixedit","suffixtake","suffixlist","suffixsetactive","suffixdeactive","shop"));
+            completions.addAll(Arrays.asList("give","edit","take","list","setactive","deactive",
+                    "suffixgive","suffixedit","suffixtake","suffixlist","suffixsetactive","suffixdeactive",
+                    "shop","panel"));
         } else if (args.length == 2) {
             String sub = args[0].toLowerCase();
             if (sub.equals("shop")) {

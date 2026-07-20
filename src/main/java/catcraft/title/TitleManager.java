@@ -5,7 +5,7 @@ import java.util.*;
 
 public class TitleManager {
     private final DatabaseManager database;
-    private final boolean enableRgb;
+    private boolean enableRgb;
 
     private final Map<UUID, Map<Integer, String>> ownedTitles = new HashMap<>();
     private final Map<UUID, Map<Integer, String>> ownedSuffixes = new HashMap<>();
@@ -17,6 +17,11 @@ public class TitleManager {
     public TitleManager(DatabaseManager database) {
         this.database = database;
         this.enableRgb = CatCraftTitlePlugin.getInstance().getConfig().getBoolean("settings.enable-rgb", false);
+    }
+
+
+    public void setRgbEnabled(boolean enable) {
+        this.enableRgb = enable;
     }
 
     public void load(Player p) {
@@ -95,6 +100,12 @@ public class TitleManager {
 
     public int getActiveSuffixId(Player p) {
         return activeSuffixId.getOrDefault(p.getUniqueId(), -1);
+    }
+
+
+    public boolean hasTitle(Player p, int id, int type) {
+        if (type == 0) return getOwnedTitles(p).containsKey(id);
+        else return getOwnedSuffixes(p).containsKey(id);
     }
 
     public boolean addTitle(Player p, int id, String display) {

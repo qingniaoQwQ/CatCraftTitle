@@ -10,7 +10,6 @@ public class MessageManager {
     private static MessageManager instance;
     private final Map<String, String> messages = new HashMap<>();
 
-
     private static final Map<String, Map<String, String>> DEFAULT_MESSAGES = new HashMap<>();
 
     static {
@@ -198,9 +197,44 @@ public class MessageManager {
         zh.put("gui-shop-type", "类型:");
         zh.put("gui-shop-list-hint", "§7点击进入查看");
 
+        zh.put("admin-panel-title", "§6CatCraft 管理面板");
+        zh.put("admin-author", "§7作者: §eQingNiaoQaQ");
+        zh.put("admin-papi-status", "§7PlaceholderAPI: ");
+        zh.put("admin-papi-found", "§a✔");
+        zh.put("admin-papi-notfound", "§c✘");
+        zh.put("admin-server-status", "§6服务器状态");
+        zh.put("admin-tps", "§7TPS: ");
+        zh.put("admin-online", "§7在线: ");
+        zh.put("admin-memory", "§7内存: ");
+        zh.put("admin-memory-used", "MB §7/ §f");
+        zh.put("admin-attribute-support", "§6属性插件支持");
+        zh.put("admin-attribute-desc", "§7根据 PAPI 占位符自动授予/移除称号");
+        zh.put("admin-rgb", "§6RGB 渐变色头衔/后缀");
+        zh.put("admin-rgb-desc", "§7需服务端支持 RGB 颜色代码");
+        zh.put("admin-shop", "§6内置商店系统");
+        zh.put("admin-shop-desc", "§7允许玩家使用金币购买称号");
+        zh.put("admin-reload", "§e重载配置文件");
+        zh.put("admin-reload-lore", "§7重新加载 config.yml");
+        zh.put("admin-reload-lore2", "§7无需重启服务器");
+        zh.put("admin-database", "§6数据库状态");
+        zh.put("admin-db-type", "§7类型: ");
+        zh.put("admin-db-status", "§7状态: ");
+        zh.put("admin-db-connected", "§a已连接");
+        zh.put("admin-db-disconnected", "§c未连接");
+        zh.put("admin-close", "§c关闭面板");
+        zh.put("admin-close-lore", "§7点击关闭");
+        zh.put("admin-toggle-enabled", "§a✔ 已启用");
+        zh.put("admin-toggle-disabled", "§c✘ 已禁用");
+        zh.put("admin-toggle-click", "§e点击切换");
+        zh.put("admin-lang-zh", "§a中文 (简体)");
+        zh.put("admin-lang-en", "§eEnglish");
+        zh.put("admin-lang-code", "§7语言代码: ");
+        zh.put("admin-lang-current", "§a★ 当前");
+        zh.put("admin-lang-switch", "§7点击切换");
+
+
         DEFAULT_MESSAGES.put("zh", zh);
 
-        // ========== 英文 ==========
         Map<String, String> en = new HashMap<>();
         en.put("no-permission", "&cYou do not have permission");
         en.put("player-only-command", "&cThis command is for players only");
@@ -384,6 +418,41 @@ public class MessageManager {
         en.put("gui-shop-type", "Type:");
         en.put("gui-shop-list-hint", "§7Click to browse");
 
+        en.put("admin-panel-title", "§6CatCraft Admin Panel");
+        en.put("admin-author", "§7Author: §eQingNiaoQaQ");
+        en.put("admin-papi-status", "§7PlaceholderAPI: ");
+        en.put("admin-papi-found", "§a✔");
+        en.put("admin-papi-notfound", "§c✘");
+        en.put("admin-server-status", "§6Server Status");
+        en.put("admin-tps", "§7TPS: ");
+        en.put("admin-online", "§7Online: ");
+        en.put("admin-memory", "§7Memory: ");
+        en.put("admin-memory-used", "MB §7/ §f");
+        en.put("admin-attribute-support", "§6Attribute Plugin Support");
+        en.put("admin-attribute-desc", "§7Auto grant/remove titles based on PAPI placeholders");
+        en.put("admin-rgb", "§6RGB Gradient Titles/Suffixes");
+        en.put("admin-rgb-desc", "§7Requires server support for RGB color codes");
+        en.put("admin-shop", "§6Built-in Shop System");
+        en.put("admin-shop-desc", "§7Allow players to buy titles with coins");
+        en.put("admin-reload", "§eReload Config");
+        en.put("admin-reload-lore", "§7Reload config.yml");
+        en.put("admin-reload-lore2", "§7No server restart needed");
+        en.put("admin-database", "§6Database Status");
+        en.put("admin-db-type", "§7Type: ");
+        en.put("admin-db-status", "§7Status: ");
+        en.put("admin-db-connected", "§aConnected");
+        en.put("admin-db-disconnected", "§cDisconnected");
+        en.put("admin-close", "§cClose Panel");
+        en.put("admin-close-lore", "§7Click to close");
+        en.put("admin-toggle-enabled", "§a✔ Enabled");
+        en.put("admin-toggle-disabled", "§c✘ Disabled");
+        en.put("admin-toggle-click", "§eClick to toggle");
+        en.put("admin-lang-zh", "§aChinese (Simplified)");
+        en.put("admin-lang-en", "§eEnglish");
+        en.put("admin-lang-code", "§7Language code: ");
+        en.put("admin-lang-current", "§a★ Current");
+        en.put("admin-lang-switch", "§7Click to switch");
+
         DEFAULT_MESSAGES.put("en", en);
     }
 
@@ -391,7 +460,6 @@ public class MessageManager {
         String lang = plugin.getConfig().getString("language", "zh");
         Map<String, String> defaults = DEFAULT_MESSAGES.getOrDefault(lang, DEFAULT_MESSAGES.get("zh"));
         messages.putAll(defaults);
-
     }
 
     public static void init(JavaPlugin plugin) {
@@ -409,5 +477,14 @@ public class MessageManager {
             msg = String.format(msg, args);
         } catch (Exception ignored) {}
         return ChatColor.translateAlternateColorCodes('&', msg);
+    }
+
+    public static void setLanguage(String lang) {
+        if (instance == null) return;
+        Map<String, String> defaults = DEFAULT_MESSAGES.getOrDefault(lang, DEFAULT_MESSAGES.get("zh"));
+        instance.messages.clear();
+        instance.messages.putAll(defaults);
+        CatCraftTitlePlugin.getInstance().getConfig().set("language", lang);
+        CatCraftTitlePlugin.getInstance().saveConfig();
     }
 }

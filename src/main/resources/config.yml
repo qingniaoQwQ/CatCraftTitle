@@ -31,14 +31,29 @@ permissions:
 
 settings:
   debug: true
+  # 是否启用 RGB 渐变色头衔/后缀
   enable-rgb: false
+  # 是否启用属性插件支持（基于 PlaceholderAPI 条件自动称号）
+  attribute-support: false
   check-update: true
 
 # 商店系统配置
 shop:
   # 是否启用商店（关闭后同时禁用金币系统）
-  enabled: true
+  enabled: false
   # 玩家初始金币（当首次查询时）
   default-balance: 0
   # 每日签到奖励金币
   signin-reward: 30
+
+# 自动称号规则（仅当 attribute-support 为 true 时生效）
+auto-rules:
+  # 示例：当玩家等级 >= 30 时，自动授予 ID=1 的头衔
+  - id: 1
+    type: 0                    # 0=头衔，1=后缀
+    display: "&6[&e老手&6]"    # 显示的称号文本
+    condition: "%player_level% >= 30"
+  - id: 2
+    type: 1
+    display: " &8[&7大佬&8]"
+    condition: "%vault_eco_balance% > 1000"

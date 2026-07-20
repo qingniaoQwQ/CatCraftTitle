@@ -1,6 +1,8 @@
 package catcraft.title;
 
+import catcraft.title.auto.AutoTitleManager;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class CatCraftTitlePlugin extends JavaPlugin {
@@ -8,6 +10,8 @@ public class CatCraftTitlePlugin extends JavaPlugin {
     private DatabaseManager database;
     private TitleManager manager;
     private ShopManager shopManager;
+    private boolean attributeSupportEnabled;
+    private AutoTitleManager autoTitleManager;
 
     public void onEnable() {
         instance = this;
@@ -19,7 +23,7 @@ public class CatCraftTitlePlugin extends JavaPlugin {
 
         manager = new TitleManager(database);
 
-        boolean shopEnabled = getConfig().getBoolean("shop.enabled", true);
+        boolean shopEnabled = getConfig().getBoolean("shop.enabled", false);
         int signinReward = getConfig().getInt("shop.signin-reward", 30);
         shopManager = new ShopManager(database, manager, shopEnabled, signinReward);
 
@@ -35,15 +39,21 @@ public class CatCraftTitlePlugin extends JavaPlugin {
             getLogger().warning("PlaceholderAPI 未启用，跳过占位符扩展注册。");
         }
 
-
         TitlePlayerCommand playerCmd = new TitlePlayerCommand(manager);
         getCommand("catcraft").setExecutor(playerCmd);
         getCommand("catcraft").setTabCompleter(playerCmd);
 
-
         TitleAdminCommand adminCmd = new TitleAdminCommand(manager);
         getCommand("titleadmin").setExecutor(adminCmd);
         getCommand("titleadmin").setTabCompleter(adminCmd);
+
+        attributeSupportEnabled = getConfig().getBoolean("settings.attribute-support", false);
+        if (attributeSupportEnabled) {
+            autoTitleManager = new AutoTitleManager(manager, database, this);
+            getServer().getPluginManager().registerEvents(autoTitleManager, this);
+            autoTitleManager.startScheduler();
+            getLogger().info("属性插件支持已启用，自动称号系统已启动。");
+        }
 
         try {
             Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
@@ -78,12 +88,72 @@ public class CatCraftTitlePlugin extends JavaPlugin {
     }
 
     public void onDisable() {
+        if (autoTitleManager != null) autoTitleManager.stopScheduler();
         if (database != null) database.disconnect();
     }
 
     public void reloadPlugin() {
         reloadConfig();
+        boolean shopEnabled = getConfig().getBoolean("shop.enabled", false);
+        toggleShop(shopEnabled);
+        boolean rgbEnabled = getConfig().getBoolean("settings.enable-rgb", false);
+        toggleRGB(rgbEnabled);
+        boolean attrEnabled = getConfig().getBoolean("settings.attribute-support", false);
+        toggleAttributeSupport(attrEnabled);
+        String lang = getConfig().getString("language", "zh");
+        MessageManager.setLanguage(lang);
+        getLogger().info("配置已重载。");
     }
+
+
+    public void toggleRGB(boolean enable) {
+        getConfig().set("settings.enable-rgb", enable);
+        saveConfig();
+        manager.setRgbEnabled(enable);
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            manager.load(p);
+        }
+    }
+
+    public void toggleShop(boolean enable) {
+        getConfig().set("shop.enabled", enable);
+        saveConfig();
+        this.shopManager = new ShopManager(
+                database,
+                manager,
+                enable,
+                getConfig().getInt("shop.signin-reward", 30)
+        );
+    }
+
+    public void toggleAttributeSupport(boolean enable) {
+        getConfig().set("settings.attribute-support", enable);
+        saveConfig();
+        this.attributeSupportEnabled = enable;
+        if (enable) {
+            if (autoTitleManager == null) {
+                autoTitleManager = new AutoTitleManager(manager, database, this);
+                getServer().getPluginManager().registerEvents(autoTitleManager, this);
+            }
+            autoTitleManager.startScheduler();
+            getLogger().info("属性插件支持已开启");
+        } else {
+            if (autoTitleManager != null) {
+                autoTitleManager.stopScheduler();
+                autoTitleManager.clearAllAutoTitles();
+            }
+            getLogger().info("属性插件支持已关闭");
+        }
+    }
+
+    public boolean isAttributeSupportEnabled() {
+        return attributeSupportEnabled;
+    }
+
+    public AutoTitleManager getAutoTitleManager() {
+        return autoTitleManager;
+    }
+
 
     public static CatCraftTitlePlugin getInstance() { return instance; }
     public DatabaseManager getDatabase() { return database; }
