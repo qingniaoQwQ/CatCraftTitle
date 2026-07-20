@@ -1,53 +1,67 @@
 # CatCraftTitle
 
-[English](README_EN.md) | [中文](README.md)
+[中文](README.md) | [English](README_EN.md)
 
 ---
 
-##  Plugin Overview
+## Plugin Description
 
-CatCraftTitle is a **lightweight, fully-featured Minecraft title and suffix management plugin** with GUI support, full bilingual support (Chinese/English), and multiple database backends (MySQL, PostgreSQL, SQLite). It enables servers to easily implement a player title system with cross-server synchronization.  
-**Built-in shop system** allows players to purchase titles with coins, plus a daily sign-in feature.
+CatCraftTitle is a **lightweight, GUI‑managed, bilingual (Chinese/English) Minecraft title and suffix management plugin** with full support for MySQL, PostgreSQL, and SQLite. It helps servers easily implement player title systems with cross‑server data synchronization.  
+**Built‑in shop system** allows players to purchase titles with coins, and daily sign‑in rewards are also supported.  
+The brand‑new **1.2.5 version** introduces an **Admin GUI Control Panel**, a **PlaceholderAPI‑based automatic title system** (attribute plugin support), **real‑time language switching**, and **independent feature toggles**, making administration more efficient and the user experience smoother.
 
 ![CatCraft](https://cdn.modrinth.com/data/cached_images/9996397931ad9af01a23f81aa956ae9dfcf9a80b.png)
 
-##  Features
+---
 
-- ✅ **Multi-title system**: Each player can own multiple titles, managed by unique IDs, freely switchable
-- ✅ **Independent suffix system**: Titles and suffixes are separated; players can enable/disable each suffix individually
-- ✅ **Graphical GUI**: Players can use `/catcraft gui` to manage all titles intuitively
-- ✅ **Cross-server sync**: Supports MySQL / PostgreSQL for shared data across multiple servers
-- ✅ **Automatic failover**: Falls back to SQLite if MySQL/PostgreSQL fails, no data loss
-- ✅ **No restart required**: Admins can edit title display names on the fly
-- ✅ **Player self-service**: Players manage their own titles and suffixes via commands or GUI
-- ✅ **Customizable default title**: Players without a title display a configurable fallback
-- ✅ **RGB gradient support**: Enable colorful gradient titles/suffixes with custom colors
-- ✅ **Full localization**: One-click switch between Chinese and English, including command help and GUI
-- ✅ **PlaceholderAPI support**: Provides `%catcraft_title%`, `%catcraft_suffix%` and `%catcraft_balance%` placeholders
-- ✅ **Legacy color codes support**: `&e` format etc.
-- ✅ **Built-in shop & coin system**: Admins can add items (titles/suffixes) to the shop; players purchase with coins; daily sign-in rewards coins
-- ✅ **Startup info banner**: Console displays server version, database status, PAPI status
+## Features
+
+- ✅ **Multi‑level title system** – Each player can own multiple titles, managed independently by ID, and switch activation freely.
+- ✅ **Independent suffix system** – Titles and suffixes are separated; players can enable/disable each suffix individually.
+- ✅ **Graphical GUI management** – Players can open `/catcraft gui` to manage all their titles through an intuitive interface.
+- ✅ **Admin GUI Control Panel** (new in 1.2.5) – Use `/titleadmin panel` to view server status, switch languages, toggle features, and reload configurations with one click – no manual commands needed.
+- ✅ **Automatic title system (attribute plugin support)** (new in 1.2.5) – Based on PlaceholderAPI placeholders, automatically grants or removes titles according to any player attribute (level, money, kills, etc.). Supports operators `>=`, `<=`, `==`, `!=`, `>`, `<` for flexible rules.
+- ✅ **Real‑time language switching** (new in 1.2.5) – Admins can switch between Chinese and English instantly via the GUI panel, no server restart required.
+- ✅ **Independent feature toggles** (new in 1.2.5) – Independently enable/disable RGB gradients, built‑in shop, and attribute plugin support; all are disabled by default and can be turned on as needed.
+- ✅ **Cross‑server data synchronization** – Supports MySQL and PostgreSQL for sharing player data across multiple servers.
+- ✅ **Local storage fallback** – Automatically falls back to SQLite if MySQL/PostgreSQL fails, so no data is lost.
+- ✅ **No restart required for modifications** – Admins can change title display names instantly.
+- ✅ **Player self‑service** – Players can manage their titles and suffixes via commands or GUI.
+- ✅ **Default title system** – Players without a title automatically see a customisable default title.
+- ✅ **RGB gradient support** – Enable colourful gradient titles/suffixes with customisable colours.
+- ✅ **Fully internationalised** – One‑click switch between Chinese and English; command help and GUI are fully translated.
+- ✅ **PlaceholderAPI support** – Provides `%catcraft_title%`, `%catcraft_suffix%`, and `%catcraft_balance%` placeholders.
+- ✅ **Minecraft legacy colour codes** – Supports `&e` format and similar.
+- ✅ **Built‑in shop and coin system** – Admins can add items (titles/suffixes); players buy them with coins; daily sign‑in grants coins.
+- ✅ **Startup info dashboard** – Console shows server version, database status, and PAPI status.
 
 ---
-## ⚠️ Notes
-- ⚠️ **PlaceholderAPI is required** as a prerequisite
-- ⚠️ If using PostgreSQL, ensure the server has the driver (already bundled)
-- ⚠️ **When upgrading from 1.2.2 to 1.2.3, please delete `.\plugins\CatCraftTitle\config.yml`** and let the plugin regenerate it, otherwise new feature messages will not appear. Player database is unaffected.
+## ⚠️ Important Notes
+- ⚠️ **PlaceholderAPI is required as a dependency.**
+- ⚠️ If using PostgreSQL, ensure the server has the appropriate driver installed (the plugin includes it).
+- ⚠️ **When upgrading from 1.2.3 to 1.2.4 or 1.2.5, it is strongly recommended to delete the `config.yml` file located in `.\plugins\CatCraftTitle\`** so that the plugin regenerates a clean configuration with all new settings. Failing to do so may prevent new features from working correctly or cause unexpected bugs. Player databases are unaffected – no need to delete or migrate them.
 
 ---
-## Unified Management of Titles and Suffixes - GUI Interface
-![guien](https://cdn.modrinth.com/data/cached_images/81b354ecabfd1952b60e249445f25473005830af.png)
+## Unified Title & Suffix Management – GUI
+![GUI](https://cdn.modrinth.com/data/cached_images/3832c52973eff160de8f7d650a80b2ff3b54ab3a.png)
+
 ---
-## Supports Customizing Player Names and Chat Colors
+## Admin GUI Control Panel (new in 1.2.5)
+![admingui](https://cdn.modrinth.com/data/cached_images/49a4414654563c7e2cd23306b8d2025e261e1497.png)  
+*(Screenshot is for illustration; actual interface may vary.)*
+
+---
+## Customise Player Display Name & Chat Colour
 ![test](https://cdn.modrinth.com/data/cached_images/67849a0bc9584f0ace606eb79d459997210c60eb.png)
+
 ---
 
-## 📦 Supported Servers
+## 📦 Supported Server Software
 
-- ✅ Paper 1.16.x ~ 26.2
-- ✅ Purpur 1.16.x ~ 26.2
-- ✅ Spigot 1.16.x ~ 26.2
-- ✅ Folia 1.16.x ~ 26.2
+- ✅ Paper 1.16.x – 26.2
+- ✅ Purpur 1.16.x – 26.2
+- ✅ Spigot 1.16.x – 26.2
+- ✅ Folia 1.16.x – 26.2
 - ❌ Bukkit (not recommended)
 - ❌ Sponge / BungeeCord / Velocity (not supported)
 
@@ -56,93 +70,98 @@ CatCraftTitle is a **lightweight, fully-featured Minecraft title and suffix mana
 
 - ✅ MySQL
 - ✅ PostgreSQL
-- ✅ SQLite (built-in)
+- ✅ SQLite (built‑in)
 
 ---
 
-##  Requirements
+## Required Dependencies
 
-| Dependency | Required | Description |
-|------------|----------|-------------|
-| PlaceholderAPI | ⚠️ Required | Variable support |
-| MySQL / PostgreSQL | Optional | For cross-server sync (if not used, SQLite is used automatically) |
+| Dependency        | Required | Description                                                      |
+|-------------------|----------|------------------------------------------------------------------|
+| PlaceholderAPI    | ⚠️ Required | Provides placeholder support and automatic title condition parsing |
+| MySQL / PostgreSQL | Optional | For cross‑server databases (if not used, SQLite is used automatically) |
 
 ---
 
-##  Player Commands
+## Player Commands
 
 | Command | Description |
 |---------|-------------|
-| `/catcraft gui` | Open GUI management interface |
-| `/catcraft shop` | Open shop home (title/suffix categories) |
-| `/catcraft list` | List all owned titles and suffixes with status |
-| `/catcraft active <ID>` | Activate a title by ID |
-| `/catcraft deactive` | Deactivate current title, revert to default |
-| `/catcraft suffixactive <ID>` | Activate a suffix by ID |
-| `/catcraft suffixdeactive` | Deactivate current suffix |
-| `/catcraft remove <ID>` | Remove a title or suffix (cannot remove active one) |
+| `/catcraft gui` | Opens the graphical title management interface |
+| `/catcraft shop` | Opens the shop home page (browse titles/suffixes by category) |
+| `/catcraft list` | Lists all owned titles and suffixes with their activation status |
+| `/catcraft active <ID>` | Activates the title with the given ID |
+| `/catcraft deactive` | Deactivates the currently active title and reverts to default |
+| `/catcraft suffixactive <ID>` | Activates the suffix with the given ID |
+| `/catcraft suffixdeactive` | Deactivates the currently active suffix |
+| `/catcraft remove <ID>` | Removes an owned title or suffix (cannot remove the currently active one) |
 
 ---
 
-##  Admin Commands (require `catcraft.admin`)
+## Admin Commands (require `catcraft.admin` permission)
+
+### Control Panel (new in 1.2.4)
+| Command | Description |
+|---------|-------------|
+| `/titleadmin panel` | Opens the Admin GUI Control Panel to view server status, switch language, toggle features, and reload config |
 
 ### Title Management
 | Command | Description |
 |---------|-------------|
-| `/titleadmin give <player> <ID> <display>` | Add a title to a player (ID must be globally unique) |
-| `/titleadmin edit <player> <ID> <new display>` | Edit a title's display name |
-| `/titleadmin take <player> <ID>` | Remove a title from a player (cannot remove active one) |
-| `/titleadmin list <player>` | List all titles of a player with status |
-| `/titleadmin setactive <player> <ID>` | Force activate a title for a player |
-| `/titleadmin deactive <player>` | Deactivate player's current title |
+| `/titleadmin give <player> <ID> <display>` | Gives a title to a player (ID must be globally unique) |
+| `/titleadmin edit <player> <ID> <new display>` | Changes the display name of a player's title |
+| `/titleadmin take <player> <ID>` | Removes a title from a player (cannot remove the active one) |
+| `/titleadmin list <player>` | Lists all titles owned by a player with their activation status |
+| `/titleadmin setactive <player> <ID>` | Activates a specific title for a player |
+| `/titleadmin deactive <player>` | Deactivates the player's currently active title |
 
 ### Suffix Management
 | Command | Description |
 |---------|-------------|
-| `/titleadmin suffixgive <player> <ID> <display>` | Add a suffix to a player (ID must be globally unique) |
-| `/titleadmin suffixedit <player> <ID> <new display>` | Edit a suffix's display name |
-| `/titleadmin suffixtake <player> <ID>` | Remove a suffix from a player (cannot remove active one) |
-| `/titleadmin suffixlist <player>` | List all suffixes of a player with status |
-| `/titleadmin suffixsetactive <player> <ID>` | Force activate a suffix for a player |
-| `/titleadmin suffixdeactive <player>` | Deactivate player's current suffix |
+| `/titleadmin suffixgive <player> <ID> <display>` | Gives a suffix to a player (ID must be globally unique) |
+| `/titleadmin suffixedit <player> <ID> <new display>` | Changes the display name of a player's suffix |
+| `/titleadmin suffixtake <player> <ID>` | Removes a suffix from a player (cannot remove the active one) |
+| `/titleadmin suffixlist <player>` | Lists all suffixes owned by a player with their activation status |
+| `/titleadmin suffixsetactive <player> <ID>` | Activates a specific suffix for a player |
+| `/titleadmin suffixdeactive <player>` | Deactivates the player's currently active suffix |
 
-### Shop Management (new)
+### Shop Management
 | Command | Description |
 |---------|-------------|
-| `/titleadmin shop add <ID> <type(0/1)> <price> <display>` | Add an item to title or suffix shop |
-| `/titleadmin shop remove <ID> <type>` | Remove an item from the shop |
-| `/titleadmin shop setprice <ID> <type> <new price>` | Change item price |
-| `/titleadmin shop list` | List all shop items |
-| `/titleadmin shop givebalance <player> <amount>` | Add coins to a player |
-| `/titleadmin shop setbalance <player> <amount>` | Set a player's coins to a specific value |
-| `/titleadmin shop toggle` | Hint to toggle shop via config file |
+| `/titleadmin shop add <ID> <type(0/1)> <price> <display>` | Adds an item to the title shop (0) or suffix shop (1) |
+| `/titleadmin shop remove <ID> <type>` | Removes an item from the shop |
+| `/titleadmin shop setprice <ID> <type> <new price>` | Changes the price of an item |
+| `/titleadmin shop list` | Lists all shop items |
+| `/titleadmin shop givebalance <player> <amount>` | Adds coins to a player |
+| `/titleadmin shop setbalance <player> <amount>` | Sets a player's coin balance to a specific value |
+| `/titleadmin shop toggle` | Shows a hint to enable/disable the shop via config.yml |
 
-> `type`: `0` for title, `1` for suffix.
+> Type: `0` = title, `1` = suffix.
 
 ---
 
-##  Permissions
+## Permission Nodes
 
 | Permission | Description |
 |------------|-------------|
-| `catcraft.admin` | Admin access, allows all `/titleadmin` commands |
-| `catcraft.title.set` | Legacy compatibility (not used) |
+| `catcraft.admin` | Admin permission – allows use of all `/titleadmin` commands (including `/titleadmin panel`) |
+| `catcraft.title.set` | Legacy permission (currently unused) |
 
-> Note: Player commands do not require any permission.
-
----
-
-##  PlaceholderAPI Variables
-
-| Variable | Description |
-|----------|-------------|
-| `%catcraft_title%` | Current active title (colored/RGB) |
-| `%catcraft_suffix%` | Current active suffix (colored/RGB) |
-| `%catcraft_balance%` | Player's current coin balance (integer) |
+> Note: Player commands do not require any extra permission; all players can use them.
 
 ---
 
-##  Config File (auto-generated, example)
+## PlaceholderAPI Placeholders
+
+| Placeholder | Description |
+|-------------|-------------|
+| `%catcraft_title%` | The player's currently active title display name (with colour/RGB) |
+| `%catcraft_suffix%` | The player's currently active suffix display name (with colour/RGB) |
+| `%catcraft_balance%` | The player's current coin balance (integer) |
+
+---
+
+## Configuration (auto‑generated, example)
 
 ```yaml
 # Language setting (zh / en)
@@ -150,7 +169,6 @@ language: zh
 
 # Database configuration
 database:
-  # Supported types: mysql, postgresql, sqlite
   type: sqlite
   mysql:
     host: localhost
@@ -172,25 +190,26 @@ permissions:
 
 settings:
   debug: true
-  enable-rgb: false          # Enable RGB gradient
-  check-update: true         # Enable update check
+  enable-rgb: false          # Enable RGB gradient (default: false)
+  attribute-support: false   # Enable automatic title system (default: false)
+  check-update: true         # Check for updates
 
-# Shop system configuration (new)
+# Shop system configuration
 shop:
-  enabled: true              # Enable shop (disables all shop features if false)
+  enabled: false             # Enable shop (default: false)
   default-balance: 0         # Default coins for new players
-  signin-reward: 30          # Daily sign-in reward amount
+  signin-reward: 30          # Daily sign-in reward coins
 
-# GUI custom titles (existing)
-gui:
-  home-title: "§6CatCraft Title Manager · Home"
-  title-page: "§6Title Management"
-  suffix-page: "§6Suffix Management"
-
-# All messages (bilingual, full key list in actual config)
-messages:
-  zh: { ... }
-  en: { ... }
+# Auto‑title rules (only active when attribute-support is true)
+auto-rules:
+  - id: 1
+    type: 0                    # 0 = title, 1 = suffix
+    display: "&6[&eVeteran&6]" # Display text of the title/suffix
+    condition: "%player_level% >= 30"
+  - id: 2
+    type: 1
+    display: " &8[&7Master&8]"
+    condition: "%vault_eco_balance% > 1000"
 ```
 
 ---
